@@ -1,7 +1,9 @@
+require("dotenv").config({ path: "../.env" });
 const express = require("express");
 const cors = require("cors");
 const http = require("http");
 const { Server } = require("socket.io");
+const path = require("path");
 
 const db = require("./config/db");
 
@@ -16,42 +18,46 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
+/* ROUTES */
 app.use("/api/auth", authRoutes);
 app.use("/api/listings", listingRoutes);
 app.use("/api", interestRoutes);
 app.use("/api", userRoutes);
 app.use("/api", messageRoutes);
 
-app.get("/", (req,res)=>{
+/* TEST ROUTE */
+app.get("/", (req, res) => {
   res.send("Campus OLX API running");
 });
 
+/* CREATE SERVER */
 const server = http.createServer(app);
 
-const io = new Server(server,{
-  cors:{
-    origin:"http://localhost:3000",
-    methods:["GET","POST"]
+/* SOCKET.IO */
+const io = new Server(server, {
+  cors: {
+    origin: "*",
+    methods: ["GET", "POST"]
   }
 });
 
-io.on("connection",(socket)=>{
+io.on("connection", (socket) => {
 
-  console.log("User connected:",socket.id);
+  console.log("User connected:", socket.id);
 
-  socket.on("join",(userId)=>{
+  socket.on("join", (userId) => {
     socket.join(userId);
   });
 
-  socket.on("sendMessage",async(data)=>{
+  socket.on("sendMessage", async (data) => {
 
-    const { senderId,receiverId,message } = data;
+    const { senderId, receiverId, message } = data;
 
-    try{
+    try {
 
       await db.query(
         "INSERT INTO messages (sender_id,receiver_id,message) VALUES (?,?,?)",
-        [senderId,receiverId,message]
+        [senderId, receiverId, message]
       );
 
       const msg = {
@@ -64,19 +70,28 @@ io.on("connection",(socket)=>{
       io.to(receiverId).emit("receiveMessage", msg);
       io.to(senderId).emit("receiveMessage", msg);
 
-
-    }catch(err){
+    } catch (err) {
       console.log(err);
     }
 
   });
 
-  socket.on("disconnect",()=>{
-    console.log("User disconnected:",socket.id);
+  socket.on("disconnect", () => {
+    console.log("User disconnected:", socket.id);
   });
 
 });
 
-server.listen(5000,()=>{
-  console.log("Server running on http://localhost:5000");
+/* SERVE FRONTEND */
+app.use(express.static(path.join(__dirname, "../frontend/build")));
+
+app.get("/*", (req, res) => {
+  res.sendFile(path.join(__dirname, "../frontend/build/index.html"));
+});
+
+/* PORT */
+const PORT = process.env.PORT || 5000;
+
+server.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
 });
