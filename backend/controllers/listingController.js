@@ -2,7 +2,6 @@ const db = require("../config/db");
 
 
 // CREATE LISTING
-
 exports.createListing = (req, res) => {
 
  const { title, description, category, item_condition, price } = req.body || {};
@@ -50,7 +49,7 @@ exports.getListings = (req,res)=>{
 
     SELECT 
         listings.*,
-        COUNT(interests.user_id) AS interest_count
+        COUNT(interests.buyer_id) AS interest_count
     FROM listings
     LEFT JOIN interests
     ON listings.id = interests.listing_id
@@ -61,19 +60,20 @@ exports.getListings = (req,res)=>{
     LIMIT ? OFFSET ?
     `;
 
-    db.query(
- query,
- [`%${search}%`, `%${category}%`, minPrice, maxPrice, limit, offset],
- (err,result)=>{
+ db.query(
+  query,
+  [`%${search}%`, `%${category}%`, minPrice, maxPrice, limit, offset],
+  (err,result)=>{
 
-  if(err){
-   console.log("Query error:",err);
-   return res.status(500).json(err);
+   if(err){
+    console.log("Query error:",err);
+    return res.status(500).json(err);
+   }
+
+   res.json(result);
+
   }
-
-  res.json(result);
-
- });
+ );
 
 };
 
@@ -169,6 +169,9 @@ exports.deleteListing = (req,res)=>{
 
 };
 
+
+
+// SHOW CONTACT
 exports.showContact = (req,res)=>{
 
  console.log("Contact API called");
@@ -195,5 +198,4 @@ exports.showContact = (req,res)=>{
 
   }
  );
-
 };
