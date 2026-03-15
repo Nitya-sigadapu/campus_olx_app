@@ -1,13 +1,14 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
-
 import "../App.css";
+
+const API = "https://campus-olx-application.onrender.com";
 
 function Dashboard() {
 
   const [listings, setListings] = useState([]);
   const [contacts, setContacts] = useState({});
-  
+
   const [search, setSearch] = useState("");
   const [category, setCategory] = useState("");
   const [minPrice, setMinPrice] = useState("");
@@ -26,7 +27,7 @@ function Dashboard() {
       try {
 
         const res = await axios.get(
-          `http://localhost:5000/api/listings?page=${page}&search=${search}&category=${category}&minPrice=${minPrice}&maxPrice=${maxPrice}`
+          `${API}/api/listings?page=${page}&search=${search}&category=${category}&minPrice=${minPrice}&maxPrice=${maxPrice}`
         );
 
         setListings(res.data);
@@ -50,7 +51,7 @@ function Dashboard() {
       const token = localStorage.getItem("token");
 
       await axios.delete(
-        `http://localhost:5000/api/listings/${id}`,
+        `${API}/api/listings/${id}`,
         {
           headers:{
             Authorization:`Bearer ${token}`
@@ -80,7 +81,7 @@ function Dashboard() {
       }
 
       await axios.post(
-        "http://localhost:5000/api/interests",
+        `${API}/api/interests`,
         {
           userId:user.id,
           listingId:id
@@ -88,7 +89,7 @@ function Dashboard() {
       );
 
       const res = await axios.get(
-        `http://localhost:5000/api/listings/${id}/contact`
+        `${API}/api/listings/${id}/contact`
       );
 
       setContacts(prev => ({
@@ -101,7 +102,9 @@ function Dashboard() {
     }
 
   };
-  
+
+
+
   return(
 
     <div className="container">
@@ -209,11 +212,6 @@ function Dashboard() {
         </button>
 
       </div>
-
-
-      {/* CHAT WINDOW */}
-
-      
 
     </div>
 
