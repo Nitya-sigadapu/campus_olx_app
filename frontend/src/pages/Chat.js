@@ -25,7 +25,7 @@ function Chat() {
     try {
 
       const res = await axios.get(
-        "https://campus-olx-application.onrender.com/api/user-by-email",
+        "http://campus-olx-application.onrender.com/api/user-by-email",
         {
           params: { email: receiverEmail.trim() }
         }
