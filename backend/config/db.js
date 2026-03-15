@@ -3,6 +3,7 @@ const mysql = require("mysql2");
 
 const db = mysql.createConnection({
   host: process.env.DB_HOST,
+  port: process.env.DB_PORT,
   user: process.env.DB_USER,
   password: process.env.DB_PASSWORD,
   database: process.env.DB_NAME
@@ -15,7 +16,6 @@ db.connect((err) => {
   } else {
     console.log("MySQL Connected");
 
-    // create tables automatically if they don't exist
     db.query(`
       CREATE TABLE IF NOT EXISTS users (
         id INT AUTO_INCREMENT PRIMARY KEY,
