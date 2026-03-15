@@ -30,6 +30,13 @@ app.get("/", (req, res) => {
   res.send("Campus OLX API running");
 });
 
+/* SERVE FRONTEND */
+app.use(express.static(path.join(__dirname, "../frontend/build")));
+
+app.get("*", (req, res) => {
+  res.sendFile(path.join(__dirname, "../frontend/build/index.html"));
+});
+
 /* CREATE SERVER */
 const server = http.createServer(app);
 
@@ -80,13 +87,6 @@ io.on("connection", (socket) => {
     console.log("User disconnected:", socket.id);
   });
 
-});
-
-/* SERVE FRONTEND */
-app.use(express.static(path.join(__dirname, "../frontend/build")));
-
-app.get("/*", (req, res) => {
-  res.sendFile(path.join(__dirname, "../frontend/build/index.html"));
 });
 
 /* PORT */
