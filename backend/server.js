@@ -25,10 +25,6 @@ app.use("/api", interestRoutes);
 app.use("/api", userRoutes);
 app.use("/api", messageRoutes);
 
-/* TEST ROUTE */
-app.get("/", (req, res) => {
-  res.send("Campus OLX API running");
-});
 
 /* SERVE FRONTEND */
 app.use(express.static(path.join(__dirname, "../frontend/build")));
