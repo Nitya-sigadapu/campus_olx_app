@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import "../App.css";
 
-const API = "https://campus-olx-application.onrender.com";
+const API = "http://localhost:5000";
 
 function Dashboard() {
 

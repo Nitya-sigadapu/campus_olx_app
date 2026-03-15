@@ -1,8 +1,8 @@
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState,useRef  } from "react";
 import { io } from "socket.io-client";
 import axios from "axios";
 
-const socket = io("https://campus-olx-application.onrender.com");
+const socket = io("http://localhost:5000");
 
 function Chat() {
 
@@ -16,6 +16,7 @@ function Chat() {
 
   const chatEndRef = useRef(null);
 
+
   // UNREAD STATES
   const [unreadCount, setUnreadCount] = useState(0);
   const [unreadFrom, setUnreadFrom] = useState("");
@@ -25,7 +26,7 @@ function Chat() {
     try {
 
       const res = await axios.get(
-        "http://campus-olx-application.onrender.com/api/user-by-email",
+        "http://localhost:5000/api/user-by-email",
         {
           params: { email: receiverEmail.trim() }
         }
@@ -36,7 +37,7 @@ function Chat() {
       setUnreadFrom("");
 
       const history = await axios.get(
-        `http://campus-olx-application.onrender.com/api/messages/${user.id}/${res.data.id}`
+        `http://localhost:5000/api/messages/${user.id}/${res.data.id}`
       );
 
       setMessages(history.data);

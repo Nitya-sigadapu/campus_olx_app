@@ -27,7 +27,7 @@ function CreateListing() {
       const token = localStorage.getItem("token");
 
       await axios.post(
-        "http://campus-olx-application.onrender.com/api/listings/create",
+        "http://localhost:5000/api/listings/create",
         form,
         {
           headers:{

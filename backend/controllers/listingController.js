@@ -49,7 +49,7 @@ exports.getListings = (req,res)=>{
 
     SELECT 
         listings.*,
-        COUNT(interests.buyer_id) AS interest_count
+        COUNT(*) AS interest_count
     FROM listings
     LEFT JOIN interests
     ON listings.id = interests.listing_id

@@ -13,7 +13,7 @@ function MyInterests(){
     try{
 
       const res = await axios.get(
-        `http://campus-olx-application.onrender.com/api/interests/${user.id}`
+        `http://localhost:5000/api/interests/${user.id}`
       );
 
       setInterests(res.data);
@@ -36,7 +36,7 @@ function MyInterests(){
     try{
 
       await axios.delete(
-        "http://campus-olx-application.onrender.com/api/interests",
+        "http://localhost:5000/api/interests",
         {
           data:{
             userId:user.id,
