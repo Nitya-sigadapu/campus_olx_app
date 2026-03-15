@@ -1,7 +1,12 @@
 require("dotenv").config();
 const mysql = require("mysql2");
 
-const db = mysql.createConnection(process.env.DATABASE_URL);
+const db = mysql.createConnection({
+  uri: process.env.DATABASE_URL,
+  ssl: {
+    rejectUnauthorized: false
+  }
+});
 
 db.connect((err) => {
   if (err) {
@@ -10,7 +15,6 @@ db.connect((err) => {
   } else {
     console.log("MySQL Connected");
 
-    // Create tables automatically if they don't exist
     db.query(`
       CREATE TABLE IF NOT EXISTS users (
         id INT AUTO_INCREMENT PRIMARY KEY,
