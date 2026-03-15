@@ -31,6 +31,8 @@ db.connect((err) => {
         id INT AUTO_INCREMENT PRIMARY KEY,
         title VARCHAR(255),
         description TEXT,
+        category VARCHAR(255),
+        item_condition VARCHAR(50),
         price DECIMAL(10,2),
         seller_id INT,
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
