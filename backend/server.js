@@ -49,8 +49,10 @@ io.on("connection", (socket) => {
   console.log("User connected:", socket.id);
 
   socket.on("join", (userId) => {
-    socket.join(userId);
-  });
+  const room = String(userId);   
+  console.log("Joining room:", room);
+  socket.join(room);
+});
 
   socket.on("sendMessage", async (data) => {
 
@@ -70,8 +72,8 @@ io.on("connection", (socket) => {
         time: new Date()
       };
 
-      io.to(receiverId).emit("receiveMessage", msg);
-      io.to(senderId).emit("receiveMessage", msg);
+      io.to(String(receiverId)).emit("receiveMessage", msg);
+      io.to(String(senderId)).emit("receiveMessage", msg);
 
     } catch (err) {
       console.log(err);

@@ -1,4 +1,4 @@
-import { useEffect, useState,useRef  } from "react";
+import { useEffect, useState, useRef } from "react";
 import { io } from "socket.io-client";
 import axios from "axios";
 
@@ -16,8 +16,6 @@ function Chat() {
 
   const chatEndRef = useRef(null);
 
-
-  // UNREAD STATES
   const [unreadCount, setUnreadCount] = useState(0);
   const [unreadFrom, setUnreadFrom] = useState("");
 
@@ -32,53 +30,65 @@ function Chat() {
         }
       );
 
-      setReceiverId(res.data.id);
+      const rId = Number(res.data.id);
+
+      setReceiverId(rId);
       setUnreadCount(0);
       setUnreadFrom("");
 
       const history = await axios.get(
-        `http://localhost:5000/api/messages/${user.id}/${res.data.id}`
+        `http://localhost:5000/api/messages/${user.id}/${rId}`
       );
 
       setMessages(history.data);
 
     } catch (err) {
-
       console.log(err);
       alert("User not found");
-
     }
 
   };
 
+  // ✅ FIXED SOCKET LOGIC
   useEffect(() => {
 
-    socket.emit("join", user.id);
+    if (!user.id) return;
 
-    socket.on("receiveMessage", (msg) => {
+    socket.emit("join", String(user.id));
 
+    const handleMessage = (msg) => {
+
+      const sender = Number(msg.senderId || msg.sender_id);
+      const receiver = Number(msg.receiverId || msg.receiver_id);
+
+      // ✅ only filter AFTER receiverId exists
       if (
-        (msg.senderId === receiverId && msg.receiverId === user.id) ||
-        (msg.senderId === user.id && msg.receiverId === receiverId)
+        receiverId &&
+        (
+          (sender === receiverId && receiver === Number(user.id)) ||
+          (sender === Number(user.id) && receiver === receiverId)
+        )
       ) {
         setMessages(prev => [...prev, msg]);
       }
 
-      const sender = msg.senderId || msg.sender_id;
-      const receiver = msg.receiverId || msg.receiver_id;
-
-      if (receiver === user.id && sender !== receiverId) {
+      // unread logic
+      if (receiver === Number(user.id) && sender !== receiverId) {
         setUnreadCount(prev => prev + 1);
         setUnreadFrom(sender);
       }
 
-    });
+    };
 
-    return () => socket.off("receiveMessage");
+    socket.on("receiveMessage", handleMessage);
+
+    return () => {
+      socket.off("receiveMessage", handleMessage);
+    };
 
   }, [user.id, receiverId]);
 
-  // AUTO SCROLL EFFECT
+  // AUTO SCROLL
   useEffect(() => {
     chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
@@ -87,21 +97,20 @@ function Chat() {
 
     if (!text.trim() || !receiverId) return;
 
-    if (receiverId === user.id) {
+    if (receiverId === Number(user.id)) {
       alert("You cannot message yourself");
       return;
     }
 
     const data = {
-      senderId: user.id,
-      receiverId: receiverId,
+      senderId: Number(user.id),
+      receiverId: Number(receiverId),
       message: text
     };
 
     socket.emit("sendMessage", data);
 
     setText("");
-
   };
 
   return (
@@ -152,7 +161,6 @@ function Chat() {
 
         })}
 
-        {/* AUTO SCROLL TARGET */}
         <div ref={chatEndRef}></div>
 
       </div>
