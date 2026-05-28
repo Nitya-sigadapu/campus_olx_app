@@ -177,6 +177,14 @@ function Dashboard() {
                 ₹{item.price}
               </p>
 
+              <p className="description" style={{fontSize: "0.9rem", color: "var(--text-main)", margin: "0 0 10px 0"}}>
+                {item.description}
+              </p>
+
+              <p className="condition" style={{fontSize: "0.85rem", color: "var(--text-muted)", margin: "0 0 10px 0"}}>
+                Condition: <strong>{item.item_condition}</strong>
+              </p>
+
               <p className="interest-count">
                 {item.interest_count || 0} students interested
               </p>

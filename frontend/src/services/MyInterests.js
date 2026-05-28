@@ -69,14 +69,30 @@ function MyInterests() {
 
           <div key={item.id} className="card">
 
+          {item.image_url ? (
+            <img 
+              src={`http://localhost:5000${item.image_url}`} 
+              alt={item.title} 
+              className="card-image"
+            />
+          ) : (
             <div className="card-image-placeholder">
               No Image Available
             </div>
+          )}
 
-            <div className="card-content">
-              <h3 className="item-title">{item.title}</h3>
+          <div className="card-content">
+            <h3 className="item-title">{item.title}</h3>
 
-              <p className="price">₹{item.price}</p>
+            <p className="price">₹{item.price}</p>
+
+            <p className="description" style={{fontSize: "0.9rem", color: "var(--text-main)", margin: "0 0 10px 0"}}>
+              {item.description}
+            </p>
+
+            <p className="condition" style={{fontSize: "0.85rem", color: "var(--text-muted)", margin: "0 0 10px 0"}}>
+              Condition: <strong>{item.item_condition}</strong>
+            </p>
 
               <p className="seller">Seller: {item.seller_name}</p>
 
