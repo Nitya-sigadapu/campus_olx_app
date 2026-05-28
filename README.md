@@ -1,53 +1,50 @@
-# Campus OLX – The Resource Exchange
+# Campus OLX – The Campus Resource Exchange
 
-## Project Description
+## Project Overview
 
-Campus OLX is a secure campus-exclusive marketplace designed for students to buy and sell used academic resources such as books, lab coats, electronics, and stationery.
+Campus OLX is a secure campus-exclusive marketplace platform designed for students to buy and sell used academic and hostel-related resources such as books, electronics, cycles, lab coats, stationery, and room essentials.
 
-Every semester, seniors discard valuable items while juniors struggle to find them at affordable prices. Campus OLX solves this problem by creating a platform where students can easily exchange these resources within their college community.
+Every semester, seniors often discard valuable items while juniors search for affordable alternatives. Campus OLX bridges this gap by creating a trusted student marketplace within the college community.
 
-The platform ensures security by allowing only **college email IDs** to register and uses **OTP verification and JWT authentication** to protect user accounts.
-
-The application also includes features such as **interest tracking, contact reveal, pagination, search filters, and real-time chat between users**.
+The platform restricts access to verified college email IDs and includes OTP verification, JWT authentication, real-time chat, image uploads, pagination, and interest tracking.
 
 ---
 
 # Tech Stack
 
-| Category          | Technology | Reason                                    |
-| ----------------- | ---------- | ----------------------------------------- |
-| Frontend          | React      | Component-based UI and fast development   |
-| Backend           | Express.js | Lightweight REST API framework            |
-| Database          | MySQL      | Structured relational database            |
-| Authentication    | JWT        | Secure session handling                   |
-| Password Security | bcrypt     | Secure password hashing                   |
-| Real-time Chat    | Socket.io  | Enables instant messaging                 |
-| API Requests      | Axios      | Simplifies frontend-backend communication |
+| Category                | Technology | Purpose                        |
+| ----------------------- | ---------- | ------------------------------ |
+| Frontend                | React.js   | Dynamic component-based UI     |
+| Backend                 | Express.js | REST API development           |
+| Database                | MySQL      | Relational database management |
+| Authentication          | JWT        | Secure user sessions           |
+| Password Security       | bcrypt     | Password hashing               |
+| Real-Time Communication | Socket.io  | Instant messaging              |
+| File Uploads            | Multer     | Image upload handling          |
+| API Requests            | Axios      | Frontend-backend communication |
 
 ---
 
 # Database
 
-The project uses a **local MySQL database** named:
+The project uses a local MySQL database:
 
-```
+```sql
 campus_olx
 ```
 
-Main tables used in the project:
+## Main Tables
 
-```
-users
-listings
-interests
-messages
-```
+* users
+* listings
+* interests
+* messages
 
 ---
 
-# Demo Accounts (For Testing)
+# Demo Accounts
 
-The following accounts already exist in the database and can be used for testing.
+The following demo accounts are available for testing:
 
 | Name      | Email                                               | Password |
 | --------- | --------------------------------------------------- | -------- |
@@ -55,10 +52,8 @@ The following accounts already exist in the database and can be used for testing
 | Praharsha | [praharsha@iiti.ac.in](mailto:praharsha@iiti.ac.in) | 654321   |
 | Prayuktha | [prayuktha@iiti.ac.in](mailto:prayuktha@iiti.ac.in) | 123456   |
 | Charan    | [charan@iiti.ac.in](mailto:charan@iiti.ac.in)       | 123456   |
-| Amulya    | [amulya@iiti.ac.in](mailto:amulya@iiti.ac.in)       | 123456   |
-| Roja      | [roja@iiti.ac.in](mailto:roja@iiti.ac.in)           | 123456   |
 
-If login fails, you can create a new account using the signup page.
+If login fails, users can create a new account using the signup page.
 
 ---
 
@@ -66,15 +61,15 @@ If login fails, you can create a new account using the signup page.
 
 During signup:
 
-1. User enters email, password and contact number.
-2. The backend generates a **6-digit OTP**.
-3. The OTP is printed in the **backend terminal (server console)**.
-4. The user enters the OTP in the frontend.
-5. After verification, the account becomes active.
+1. User enters email, password, and contact number
+2. Backend generates a 6-digit OTP
+3. OTP is displayed in backend terminal
+4. User enters OTP in frontend
+5. Account becomes verified after successful validation
 
 Example terminal output:
 
-```
+```bash
 Generated OTP for user@iiti.ac.in : 493078
 ```
 
@@ -84,10 +79,10 @@ Generated OTP for user@iiti.ac.in : 493078
 
 ## Secure Authentication
 
-* Signup restricted to college email IDs
-* OTP verification required
-* Passwords hashed using **bcrypt**
-* JWT-based login sessions
+* College email-only registration
+* OTP verification system
+* Password hashing using bcrypt
+* JWT-based authentication
 
 ---
 
@@ -100,20 +95,49 @@ Users can create listings with:
 * Category
 * Condition
 * Price
+* Listing Images
 
-Users can also delete their own listings.
-Unauthorized attempts return **403 Forbidden**.
+Users can:
+
+* Create listings
+* Delete their own listings
+* View all listings
+* Upload item photos
+
+Unauthorized deletion attempts return:
+
+```bash
+403 Forbidden
+```
+
+---
+
+## Image Upload Functionality
+
+Campus OLX supports image uploads for marketplace listings.
+
+### Features
+
+* Users can upload product photos while creating listings
+* Images are stored locally on the backend server using Multer
+* Uploaded images are dynamically displayed on listing cards
+* Unique filenames are generated to prevent collisions
+* Placeholder image displayed when no image exists
+
+This feature improves listing quality and provides a more realistic marketplace experience.
 
 ---
 
 ## Browse Marketplace
 
-The dashboard displays all marketplace items including:
+Dashboard displays:
 
-* Item title
-* Price
-* Number of interested students
-* Seller contact information (after showing interest)
+*Listing image previews
+*Item title and price
+*Seller information
+*Interest count
+*Category and condition details
+*Clean card-based marketplace UI
 
 ---
 
@@ -121,56 +145,59 @@ The dashboard displays all marketplace items including:
 
 Users can filter listings using:
 
-* Search by item title
+* Search by title
 * Category filter
 * Price range filter
 
-Listings update dynamically.
+Listings update dynamically without page reloads.
 
 ---
 
 ## Interest System
 
-Seller contact information is hidden by default.
+Seller contact details remain hidden initially.
 
 When a user clicks **Show Interest**:
 
-* Seller contact number becomes visible
+* Seller contact becomes visible
 * Interest count increases
 
 Example:
 
-```
-5 students interested
+```bash
+8 students interested
 ```
 
 ---
 
 ## Pagination
 
-To maintain performance:
+To improve performance and user experience:
 
-* API returns **10 listings per page**
-* Navigation using **Next / Previous buttons**
+* API returns 12 listings per page
+* Navigation supported using Next / Previous controls
 
 ---
 
-## Real-Time Chat (Bonus Feature)
+## Real-Time Chat System
 
-Campus OLX includes a real-time chat system implemented using **Socket.io**.
+Campus OLX includes a real-time messaging system powered by Socket.io.
 
-Features:
+### Features
 
-* Private messaging between buyers and sellers
+* Private buyer-seller messaging
 * Instant message delivery
-* Message history stored in database
+* Persistent message history
 * Auto-scroll chat interface
+* WhatsApp-inspired modern chat UI
+
+The chat system enables smooth communication directly inside the platform.
 
 ---
 
 # Setup Instructions
 
-## 1 Clone Repository
+## 1. Clone Repository
 
 ```bash
 git clone https://github.com/Nitya-sigadapu/campus_olx_app.git
@@ -179,7 +206,7 @@ cd campus_olx_app
 
 ---
 
-## 2 Install Backend Dependencies
+## 2. Install Backend Dependencies
 
 ```bash
 cd backend
@@ -188,7 +215,7 @@ npm install
 
 ---
 
-## 3 Install Frontend Dependencies
+## 3. Install Frontend Dependencies
 
 ```bash
 cd ../frontend
@@ -197,20 +224,20 @@ npm install
 
 ---
 
-## 4 Environment Variables
+# Environment Variables
 
-Create a `.env` file inside the **backend** folder.
+Create a `.env` file inside the backend folder.
 
 Example:
 
-```
+```env
 PORT=5000
 JWT_SECRET=your_secret_key
 ```
 
 ---
 
-## 5 Run Backend
+# Run Backend
 
 ```bash
 cd backend
@@ -219,7 +246,7 @@ node server.js
 
 ---
 
-## 6 Run Frontend
+# Run Frontend
 
 ```bash
 cd frontend
@@ -230,46 +257,51 @@ npm start
 
 # Local Development URLs
 
-Frontend
+## Frontend
 
-```
+```bash
 http://localhost:3000
 ```
 
-Backend API
+## Backend API
 
-```
+```bash
 http://localhost:5000
 ```
 
 ---
 
-# Hosted Link
+# Deployment
 
-Currently running locally.
-Deployment can be done using:
+The project currently runs locally for development purposes.
 
-* **Render** (backend)
-* **Vercel / Netlify** (frontend)
+Recommended deployment platforms:
+
+* Render (Backend)
+* Vercel / Netlify (Frontend)
 
 ---
 
 # Future Improvements
 
-* Image upload for listings
-* Wishlist / favorites feature
+* Cloud image storage using AWS S3 or Cloudinary
+* Full production deployment
 * Seller notification system
-* Mobile responsive improvements
-* Cloud deployment
+* Advanced recommendation engine
+* Mobile responsive optimization
+* Admin moderation dashboard
 
 ---
 
 # Author
 
-Developed as a **full-stack web application project** demonstrating:
+Developed as a full-stack web application project demonstrating:
 
 * Authentication systems
-* REST API design
+* REST API development
 * Database management
 * Real-time communication
+* File upload handling
 * Modern React frontend architecture
+* Secure backend engineering
+* Full-stack application deployment workflows
