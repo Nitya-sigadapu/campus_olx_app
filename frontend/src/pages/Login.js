@@ -1,5 +1,6 @@
 import { useState } from "react";
 import axios from "axios";
+import toast from "react-hot-toast";
 import "../App.css";
 
 function Login({ setUser }) {
@@ -17,23 +18,32 @@ function Login({ setUser }) {
   const handleSignup = async (e) => {
     e.preventDefault();
 
+    if (!email.endsWith("@iiti.ac.in")) {
+      toast.error("Please use your institute email (@iiti.ac.in)");
+      return;
+    }
+
+    if (password.length < 6) {
+      toast.error("Password must be at least 6 characters long");
+      return;
+    }
+
     if (!contact || contact.length !== 10) {
-      alert("Enter valid 10 digit contact number");
+      toast.error("Enter valid 10 digit contact number");
       return;
     }
 
     try {
-
       const res = await axios.post(
         "http://localhost:5000/api/auth/signup",
         { email, password, contact }
       );
 
-      alert(res.data.message);
+      toast.success(res.data.message);
       setOtpStep(true);
 
     } catch (err) {
-      alert(err.response?.data?.message || "Signup failed");
+      toast.error(err.response?.data?.message || "Signup failed");
     }
   };
 
@@ -43,19 +53,18 @@ function Login({ setUser }) {
     e.preventDefault();
 
     try {
-
       const res = await axios.post(
         "http://localhost:5000/api/auth/verify-otp",
         { email, otp }
       );
 
-      alert(res.data.message);
+      toast.success(res.data.message);
 
       setOtpStep(false);
       setSignup(false);
 
     } catch (err) {
-      alert(err.response?.data?.message || "OTP verification failed");
+      toast.error(err.response?.data?.message || "OTP verification failed");
     }
   };
 
@@ -64,8 +73,11 @@ function Login({ setUser }) {
   const handleLogin = async (e) => {
     e.preventDefault();
 
-    try {
+    if (!email.endsWith("@iiti.ac.in")) {
+      return toast.error("Please login with your institute email id");
+    }
 
+    try {
       const res = await axios.post(
         "http://localhost:5000/api/auth/login",
         { email, password }
@@ -74,10 +86,11 @@ function Login({ setUser }) {
       localStorage.setItem("token", res.data.token);
       localStorage.setItem("user", JSON.stringify(res.data.user));
 
+      toast.success("Welcome back!");
       setUser(res.data.user);
 
     } catch (err) {
-      alert(err.response?.data?.message || "Login failed");
+      toast.error(err.response?.data?.message || "Login failed");
     }
   };
 

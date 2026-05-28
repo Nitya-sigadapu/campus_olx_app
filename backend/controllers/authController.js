@@ -20,6 +20,12 @@ exports.signup = async (req,res)=>{
     });
   }
 
+  if (password.length < 6) {
+    return res.status(400).json({
+      message: "Password must be at least 6 characters long"
+    });
+  }
+
   if(!email.endsWith("@iiti.ac.in")){
     return res.status(400).json({
       message:"Use your institute email (@iiti.ac.in)"
@@ -64,8 +70,8 @@ exports.signup = async (req,res)=>{
       console.log("Generated OTP:", otp);
 
       db.query(
-        "INSERT INTO users (name,email,password,otp,verified) VALUES (?,?,?,?,false)",
-        [name,email,hashed,otp],
+        "INSERT INTO users (name,email,password,contact,otp,verified) VALUES (?,?,?,?,?,false)",
+        [name,email,hashed,contact,otp],
         (err)=>{
 
           if(err){

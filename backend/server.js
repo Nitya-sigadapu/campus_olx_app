@@ -12,6 +12,7 @@ const listingRoutes = require("./routes/listingRoutes");
 const interestRoutes = require("./routes/interestRoutes");
 const userRoutes = require("./routes/userRoutes");
 const messageRoutes = require("./routes/messageRoutes");
+const reviewRoutes = require("./routes/reviewRoutes");
 
 const app = express();
 
@@ -24,7 +25,11 @@ app.use("/api/listings", listingRoutes);
 app.use("/api", interestRoutes);
 app.use("/api", userRoutes);
 app.use("/api", messageRoutes);
+app.use("/api", reviewRoutes);
 
+
+/* SERVE UPLOADS */
+app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
 /* SERVE FRONTEND */
 app.use(express.static(path.join(__dirname, "../frontend/build")));
@@ -55,6 +60,11 @@ io.on("connection", (socket) => {
 });
 
   socket.on("sendMessage", async (data) => {
+    console.log("Message received:", data);
+
+    if (!data.message || typeof data.message !== 'string' || !data.message.trim()) {
+      return;
+    }
 
     const { senderId, receiverId, message } = data;
 

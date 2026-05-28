@@ -6,15 +6,26 @@ exports.createListing = (req, res) => {
 
  const { title, description, category, item_condition, price } = req.body || {};
 
- if(!title || !price){
-  return res.status(400).json({message:"Title and price required"});
+ if (!title || title.trim() === "") {
+  return res.status(400).json({ message: "Title is required" });
  }
+ if (price <= 0 || isNaN(price)) {
+  return res.status(400).json({ message: "Price must be greater than zero" });
+ }
+ if (!description || description.trim().length < 12) {
+  return res.status(400).json({ message: "Description must be at least 12 characters" });
+ }
+ if (!category || category.trim() === "") {
+  return res.status(400).json({ message: "Category is required" });
+ }
+
+ const image_url = req.file ? `/uploads/${req.file.filename}` : null;
 
  db.query(
   `INSERT INTO listings
-  (title,description,category,item_condition,price,seller_id)
-  VALUES (?,?,?,?,?,?)`,
-  [title, description, category, item_condition, price, req.userId],
+  (title,description,category,item_condition,price,seller_id,image_url)
+  VALUES (?,?,?,?,?,?,?)`,
+  [title, description, category, item_condition, price, req.userId, image_url],
   (err,result)=>{
 
    if(err){
@@ -37,7 +48,7 @@ exports.getListings = (req,res)=>{
  console.log("GET /api/listings called");
 
  const page = parseInt(req.query.page) || 1;
- const limit = 10;
+ const limit = 12;
  const offset = (page - 1) * limit;
 
  const search = req.query.search || "";
@@ -46,17 +57,18 @@ exports.getListings = (req,res)=>{
  const maxPrice = req.query.maxPrice || 1000000;
 
  const query = `
-
     SELECT 
         listings.*,
-        COUNT(*) AS interest_count
+        users.name AS seller_name,
+        COUNT(interests.listing_id) AS interest_count
     FROM listings
-    LEFT JOIN interests
-    ON listings.id = interests.listing_id
+    LEFT JOIN interests ON listings.id = interests.listing_id
+    JOIN users ON listings.seller_id = users.id
     WHERE listings.title LIKE ?
     AND listings.category LIKE ?
     AND listings.price BETWEEN ? AND ?
     GROUP BY listings.id
+    ORDER BY listings.created_at DESC
     LIMIT ? OFFSET ?
     `;
 
@@ -126,7 +138,6 @@ exports.updateListing = (req,res)=>{
 };
 
 
-
 // DELETE LISTING (OWNER ONLY)
 exports.deleteListing = (req,res)=>{
 
@@ -150,16 +161,29 @@ exports.deleteListing = (req,res)=>{
    }
 
    db.query(
-    "DELETE FROM listings WHERE id=?",
+    "DELETE FROM interests WHERE listing_id=?",
     [id],
     (err)=>{
 
      if(err){
-      console.log(err);
+      console.log("Error deleting interests:", err);
       return res.status(500).json(err);
      }
 
-     res.json({message:"Listing deleted"});
+     db.query(
+      "DELETE FROM listings WHERE id=?",
+      [id],
+      (err)=>{
+
+       if(err){
+        console.log("Error deleting listing:", err);
+        return res.status(500).json(err);
+       }
+
+       res.json({message:"Listing deleted"});
+
+      }
+     );
 
     }
    );
@@ -171,31 +195,56 @@ exports.deleteListing = (req,res)=>{
 
 
 
-// SHOW CONTACT
-exports.showContact = (req,res)=>{
+// SHOW CONTACT (SECURE)
+exports.showContact = (req, res) => {
+  console.log("Contact API called by user:", req.userId);
 
- console.log("Contact API called");
+  const listingId = req.params.id;
+  const requesterId = req.userId;
 
- const id = req.params.id;
-
- db.query(
-  "SELECT contact FROM listings WHERE id=?",
-  [id],
-  (err,result)=>{
-
-   if(err){
-    console.log("DB error:",err);
-    return res.status(500).json({error:"Database error"});
-   }
-
-   if(!result || result.length === 0){
-    return res.status(404).json({message:"Listing not found"});
-   }
-
-   res.json({
-    contact: result[0].contact
-   });
-
+  if (!requesterId) {
+    return res.status(401).json({ message: "Unauthorized. Please log in." });
   }
- );
+
+  // Check if the requester is the seller OR has shown interest
+  const query = `
+    SELECT u.contact, l.seller_id 
+    FROM listings l
+    JOIN users u ON l.seller_id = u.id
+    WHERE l.id = ?
+  `;
+
+  db.query(query, [listingId], (err, results) => {
+    if (err) {
+      console.log("DB error:", err);
+      return res.status(500).json({ error: "Database error" });
+    }
+
+    if (!results || results.length === 0) {
+      return res.status(404).json({ message: "Listing not found" });
+    }
+
+    const { contact, seller_id } = results[0];
+
+    // If requester is the seller, they can see their own contact
+    if (seller_id === requesterId) {
+      return res.json({ contact: contact || "Not provided" });
+    }
+
+    // Otherwise, check if they are in the interests table
+    db.query(
+      "SELECT * FROM interests WHERE user_id = ? AND listing_id = ?",
+      [requesterId, listingId],
+      (err, interestResults) => {
+        if (err) return res.status(500).json({ error: "Database error" });
+
+        if (!interestResults || interestResults.length === 0) {
+          return res.status(403).json({ message: "Forbidden. You must show interest first to view contact details." });
+        }
+
+        // Access granted
+        res.json({ contact: contact || "Not provided" });
+      }
+    );
+  });
 };

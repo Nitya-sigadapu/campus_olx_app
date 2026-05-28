@@ -26,4 +26,15 @@ router.get("/user-by-email", (req, res) => {
 
 });
 
+// Fetch all users
+router.get("/users", (req, res) => {
+  db.query("SELECT id, name, email FROM users", (err, result) => {
+    if (err) {
+      console.log("DB error:", err);
+      return res.status(500).json({ error: "Server error" });
+    }
+    res.json(result);
+  });
+});
+
 module.exports = router;

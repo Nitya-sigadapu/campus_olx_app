@@ -1,16 +1,16 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 
-function MyInterests(){
+function MyInterests() {
 
-  const [interests,setInterests] = useState([]);
+  const [interests, setInterests] = useState([]);
 
   const user = JSON.parse(localStorage.getItem("user"));
 
   // FETCH INTERESTS
   const fetchInterests = async () => {
 
-    try{
+    try {
 
       const res = await axios.get(
         `http://localhost:5000/api/interests/${user.id}`
@@ -19,28 +19,28 @@ function MyInterests(){
       setInterests(res.data);
 
     }
-    catch(err){
+    catch (err) {
       console.log(err);
     }
 
   };
 
   useEffect(() => {
-  fetchInterests();
-}, []);
+    fetchInterests();
+  }, []);
 
 
   // REMOVE INTEREST
   const removeInterest = async (listingId) => {
 
-    try{
+    try {
 
       await axios.delete(
         "http://localhost:5000/api/interests",
         {
-          data:{
-            userId:user.id,
-            listingId:listingId
+          data: {
+            userId: user.id,
+            listingId: listingId
           }
         }
       );
@@ -48,7 +48,7 @@ function MyInterests(){
       fetchInterests();
 
     }
-    catch(err){
+    catch (err) {
       console.log(err);
     }
 
@@ -57,42 +57,50 @@ function MyInterests(){
 
 
 
-  return(
+  return (
 
-  <div className="page">
+    <div className="page">
 
-    <h2 className="page-title">My Interests</h2>
+      <h2 className="page-title">Saved Items</h2>
 
-    <div className="card-container">
+      <div className="card-container">
 
-      {interests.map(item => (
+        {interests.map(item => (
 
-        <div key={item.id} className="card">
+          <div key={item.id} className="card">
 
-          <h3 className="item-title">{item.title}</h3>
+            <div className="card-image-placeholder">
+              No Image Available
+            </div>
 
-          <p className="price">₹{item.price}</p>
+            <div className="card-content">
+              <h3 className="item-title">{item.title}</h3>
 
-          <p className="seller">Seller Email: {item.seller_name}</p>
+              <p className="price">₹{item.price}</p>
 
-          <p className="contact">Contact: {item.contact || "Not available"}</p>
+              <p className="seller">Seller: {item.seller_name}</p>
 
-          <button 
-            className="remove-btn"
-            onClick={()=>removeInterest(item.id)}
-          >
-            Remove Interest
-          </button>
+              <p className="contact">Contact: <strong>{item.contact || "Not available"}</strong></p>
 
-        </div>
+              <div className="card-actions">
+                <button
+                  className="btn-delete"
+                  onClick={() => removeInterest(item.id)}
+                >
+                  Remove Interest
+                </button>
+              </div>
+            </div>
 
-      ))}
+          </div>
+
+        ))}
+
+      </div>
 
     </div>
 
-  </div>
-
-);
+  );
 
 }
 

@@ -4,6 +4,7 @@ import CreateListing from "./pages/CreateListing";
 import Login from "./pages/Login";
 import MyInterests from "./services/MyInterests";
 import Chat from "./pages/Chat";
+import { Toaster } from "react-hot-toast";
 
 function App() {
 
@@ -25,57 +26,54 @@ function App() {
   };
 
   if (!user) {
-    return <Login setUser={setUser} />;
+    return (
+      <>
+        <Toaster position="top-right" />
+        <Login setUser={setUser} />
+      </>
+    );
   }
 
   return (
-    <div className="container">
-
-      {/* HEADER */}
-      <div className="header">
-
-        <div>
+    <div className="app-layout">
+      <Toaster position="top-right" />
+      
+      {/* NAVBAR */}
+      <nav className="navbar">
+        <div className="navbar-brand">
           <h1>Campus OLX</h1>
-          <p style={{ margin: 0, fontSize: "14px", color: "#555" }}>
-            Logged in as: {user.email.split("@")[0]}
-          </p>
+        </div>
+        
+        <div className="navbar-links">
+          <button className={`nav-link ${view === 'dashboard' ? 'active' : ''}`} onClick={() => setView("dashboard")}>
+            Browse
+          </button>
+          <button className={`nav-link ${view === 'create' ? 'active' : ''}`} onClick={() => setView("create")}>
+            Sell Item
+          </button>
+          <button className={`nav-link ${view === 'interests' ? 'active' : ''}`} onClick={() => setView("interests")}>
+            Saved
+          </button>
+          <button className={`nav-link ${view === 'chat' ? 'active' : ''}`} onClick={() => setView("chat")}>
+            Messages
+          </button>
         </div>
 
-        <button onClick={handleLogout}>
-          Logout
-        </button>
-
-      </div>
-
-      {/* NAVIGATION */}
-      <div className="nav-buttons">
-
-        <button onClick={() => setView("dashboard")}>
-          Browse Listings
-        </button>
-
-        <button onClick={() => setView("create")}>
-          Create Listing
-        </button>
-
-        <button onClick={() => setView("interests")}>
-          My Interests
-        </button>
-
-        <button onClick={() => setView("chat")}>
-          Chat
-        </button>
-
-      </div>
-
-      <hr />
+        <div className="navbar-user">
+          <span className="user-email">{user.email.split("@")[0]}</span>
+          <button className="logout-btn" onClick={handleLogout}>
+            Logout
+          </button>
+        </div>
+      </nav>
 
       {/* PAGE CONTENT */}
-      {view === "dashboard" && <Dashboard />}
-      {view === "create" && <CreateListing />}
-      {view === "interests" && <MyInterests />}
-      {view === "chat" && <Chat />}
-
+      <main className="main-content container">
+        {view === "dashboard" && <Dashboard />}
+        {view === "create" && <CreateListing />}
+        {view === "interests" && <MyInterests />}
+        {view === "chat" && <Chat />}
+      </main>
     </div>
   );
 }

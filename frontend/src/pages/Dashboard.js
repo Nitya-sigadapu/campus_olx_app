@@ -1,227 +1,252 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
+import SellerProfileModal from "../components/SellerProfileModal";
 import "../App.css";
 
 const API = "http://localhost:5000";
 
 function Dashboard() {
 
-const [listings, setListings] = useState([]);
-const [contacts, setContacts] = useState({});
+  const [listings, setListings] = useState([]);
+  const [contacts, setContacts] = useState({});
+  const [selectedSeller, setSelectedSeller] = useState(null);
 
-const [search, setSearch] = useState("");
-const [debouncedSearch, setDebouncedSearch] = useState("");
+  const [search, setSearch] = useState("");
+  const [debouncedSearch, setDebouncedSearch] = useState("");
 
-const [category, setCategory] = useState("");
-const [minPrice, setMinPrice] = useState("");
-const [maxPrice, setMaxPrice] = useState("");
+  const [category, setCategory] = useState("");
+  const [minPrice, setMinPrice] = useState("");
+  const [maxPrice, setMaxPrice] = useState("");
 
-const [page, setPage] = useState(1);
+  const [page, setPage] = useState(1);
 
-const user = JSON.parse(localStorage.getItem("user")) || {};
+  const user = JSON.parse(localStorage.getItem("user")) || {};
 
-useEffect(() => {
-const timer = setTimeout(() => {
-setDebouncedSearch(search);
-}, 500);
-
-
-return () => clearTimeout(timer);
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setDebouncedSearch(search);
+    }, 500);
 
 
-}, [search]);
-
-// FETCH LISTINGS
-useEffect(() => {
+    return () => clearTimeout(timer);
 
 
-const fetchListings = async () => {
+  }, [search]);
 
-  try {
-
-    const res = await axios.get(
-      `${API}/api/listings?page=${page}&search=${debouncedSearch}&category=${category}&minPrice=${minPrice}&maxPrice=${maxPrice}`
-    );
-
-    setListings(res.data);
-
-  } catch (err) {
-    console.log(err);
-  }
-
-};
-
-fetchListings();
+  // FETCH LISTINGS
+  useEffect(() => {
 
 
-}, [page, debouncedSearch, category, minPrice, maxPrice]);
+    const fetchListings = async () => {
 
-const deleteListing = async (id) => {
+      try {
 
+        const res = await axios.get(
+          `${API}/api/listings?page=${page}&search=${debouncedSearch}&category=${category}&minPrice=${minPrice}&maxPrice=${maxPrice}`
+        );
 
-try {
+        setListings(res.data);
 
-  const token = localStorage.getItem("token");
-
-  await axios.delete(
-    `${API}/api/listings/${id}`,
-    {
-      headers:{
-        Authorization:`Bearer ${token}`
+      } catch (err) {
+        console.log(err);
       }
+
+    };
+
+    fetchListings();
+
+
+  }, [page, debouncedSearch, category, minPrice, maxPrice]);
+
+  const deleteListing = async (id) => {
+
+
+    try {
+
+      const token = localStorage.getItem("token");
+
+      await axios.delete(
+        `${API}/api/listings/${id}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        }
+      );
+
+      setListings(prev => prev.filter(item => item.id !== id));
+
+    } catch (err) {
+      console.log(err);
     }
-  );
-
-  setListings(prev => prev.filter(item => item.id !== id));
-
-} catch(err){
-  console.log(err);
-}
 
 
-};
+  };
 
-const showContact = async (id) => {
+  const showContact = async (id) => {
 
-try{
+    try {
 
-  const listing = listings.find(l => l.id === id);
+      const listing = listings.find(l => l.id === id);
 
-  if(listing.seller_id === user.id){
-    alert("You cannot show interest in your own listing");
-    return;
-  }
+      if (listing.seller_id === user.id) {
+        alert("You cannot show interest in your own listing");
+        return;
+      }
 
-  await axios.post(
-    `${API}/api/interests`,
-    {
-      userId:user.id,
-      listingId:id
+      await axios.post(
+        `${API}/api/interests`,
+        {
+          userId: user.id,
+          listingId: id
+        }
+      );
+
+      const res = await axios.get(
+        `${API}/api/listings/${id}/contact`
+      );
+
+      setContacts(prev => ({
+        ...prev,
+        [id]: res.data.contact
+      }));
+
+    } catch (err) {
+      console.log(err);
     }
-  );
-
-  const res = await axios.get(
-    `${API}/api/listings/${id}/contact`
-  );
-
-  setContacts(prev => ({
-    ...prev,
-    [id]:res.data.contact
-  }));
-
-}catch(err){
-  console.log(err);
-}
 
 
-};
+  };
 
-return(
+  return (
+    <div className="dashboard-page">
 
+      <div className="toolbar">
+        <input
+          className="search-bar"
+          placeholder="Search books, electronics..."
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+        />
+        <input
+          className="filter-input"
+          placeholder="Category"
+          value={category}
+          onChange={(e) => setCategory(e.target.value)}
+        />
+        <input
+          className="filter-input"
+          placeholder="Min Price"
+          value={minPrice}
+          onChange={(e) => setMinPrice(e.target.value)}
+        />
+        <input
+          className="filter-input"
+          placeholder="Max Price"
+          value={maxPrice}
+          onChange={(e) => setMaxPrice(e.target.value)}
+        />
+      </div>
 
-<div className="container">
+      <h2 className="page-title">Marketplace</h2>
 
-  <input
-    className="search-bar"
-    placeholder="Search books, electronics..."
-    value={search}
-    onChange={(e)=>setSearch(e.target.value)}
-  />
+      <div className="listing-grid">
 
-  <div className="filters">
+        {listings.map(item => (
 
-    <input
-      placeholder="Category"
-      value={category}
-      onChange={(e)=>setCategory(e.target.value)}
-    />
+          <div key={item.id} className="listing-card">
 
-    <input
-      placeholder="Min Price"
-      value={minPrice}
-      onChange={(e)=>setMinPrice(e.target.value)}
-    />
+            {item.image_url ? (
+              <img
+                src={`http://localhost:5000${item.image_url}`}
+                alt={item.title}
+                className="card-image"
+              />
+            ) : (
+              <div className="card-image-placeholder">
+                No Image Available
+              </div>
+            )}
 
-    <input
-      placeholder="Max Price"
-      value={maxPrice}
-      onChange={(e)=>setMaxPrice(e.target.value)}
-    />
+            <div className="card-content">
+              <h3 className="listing-title">
+                {item.title}
+              </h3>
 
-  </div>
+              <p className="price">
+                ₹{item.price}
+              </p>
 
-  <h2>Marketplace</h2>
+              <p className="interest-count">
+                {item.interest_count || 0} students interested
+              </p>
 
-  <div className="listing-grid">
+              <p className="seller">
+                Seller: <span
+                  className="seller-link"
+                  onClick={() => setSelectedSeller({ id: item.seller_id, name: item.seller_name })}
+                >
+                  {item.seller_name || "Unknown"}
+                </span>
+              </p>
 
-    {listings.map(item => (
+              {contacts[item.id] && (
+                <p className="contact">
+                  Contact: <strong>{contacts[item.id]}</strong>
+                </p>
+              )}
 
-      <div key={item.id} className="listing-card">
+              <div className="card-actions">
+                <button
+                  className="btn-interest"
+                  onClick={() => showContact(item.id)}
+                  disabled={item.seller_id === user.id}
+                >
+                  Interested
+                </button>
 
-        <div className="listing-title">
-          {item.title}
-        </div>
+                <button
+                  className="btn-delete"
+                  onClick={() => deleteListing(item.id)}
+                  disabled={item.seller_id !== user.id}
+                >
+                  Delete
+                </button>
+              </div>
+            </div>
 
-        <div className="price">
-          ₹{item.price}
-        </div>
+          </div>
 
-        <div className="interest-count">
-          {item.interest_count || 0} students interested
-        </div>
-
-        <div className="button-group">
-
-          <button
-            onClick={()=>showContact(item.id)}
-            disabled={item.seller_id === user.id}
-          >
-            Show Interest
-          </button>
-
-          <button
-            onClick={()=>deleteListing(item.id)}
-            disabled={item.seller_id !== user.id}
-          >
-            Delete
-          </button>
-
-        </div>
-
-        {contacts[item.id] && (
-          <p className="contact">
-            Contact: {contacts[item.id]}
-          </p>
-        )}
+        ))}
 
       </div>
 
-    ))}
+      <div className="pagination">
+        <button
+          onClick={() => setPage(page - 1)}
+          disabled={page === 1}
+        >
+          Previous Page
+        </button>
+        <button
+          onClick={() => setPage(page + 1)}
+          disabled={listings.length < 12}
+        >
+          Next Page
+        </button>
+      </div>
 
-  </div>
+      {selectedSeller && (
+        <SellerProfileModal
+          sellerId={selectedSeller.id}
+          sellerName={selectedSeller.name}
+          currentUserId={user.id}
+          onClose={() => setSelectedSeller(null)}
+        />
+      )}
 
-  <div className="pagination">
-
-    <button
-      onClick={()=>setPage(page-1)}
-      disabled={page===1}
-    >
-      Previous
-    </button>
-
-    <button
-      onClick={()=>setPage(page+1)}
-      disabled={listings.length < 10}
-    >
-      Next
-    </button>
-
-  </div>
-
-</div>
-
-
-);
+    </div>
+  );
 
 }
 
