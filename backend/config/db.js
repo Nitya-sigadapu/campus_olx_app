@@ -4,12 +4,13 @@ const dbConfig = {
   host: process.env.DB_HOST || "localhost",
   user: process.env.DB_USER || "root",
   password: process.env.DB_PASSWORD || "nitya3008",
-  database: process.env.DB_NAME || "campus_olx"
+  database: process.env.DB_NAME || "campus_olx",
+  port: process.env.DB_PORT || (process.env.DB_HOST ? 4000 : 3306)
 };
 
 // Enable SSL for cloud databases (like TiDB)
 if (dbConfig.host !== "localhost") {
-  dbConfig.ssl = { rejectUnauthorized: true };
+  dbConfig.ssl = { rejectUnauthorized: false };
 }
 
 const db = mysql.createConnection(dbConfig);
