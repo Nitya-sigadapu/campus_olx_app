@@ -328,7 +328,6 @@ http://localhost:5000
 * Seller ratings and reputation system
 * Push notifications
 * Campus-specific categories
-* Mobile application
 * Admin moderation dashboard
 
 ---
