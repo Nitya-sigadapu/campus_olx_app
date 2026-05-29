@@ -65,7 +65,17 @@ db.connect((err) => {
         created_at timestamp NULL DEFAULT CURRENT_TIMESTAMP,
         PRIMARY KEY (id)
       )`,
-      `
+      `CREATE TABLE IF NOT EXISTS reviews (
+        id int NOT NULL AUTO_INCREMENT,
+        reviewer_id int NOT NULL,
+        seller_id int NOT NULL,
+        rating int NOT NULL,
+        review_text text,
+        created_at timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+        PRIMARY KEY (id),
+        UNIQUE KEY unique_review (reviewer_id,seller_id)
+      )`
+    ];
 
     initQueries.forEach(query => {
       db.query(query, (err) => {
