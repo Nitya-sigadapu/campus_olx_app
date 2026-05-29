@@ -35,40 +35,48 @@ function App() {
   }
 
   return (
-    <div className="app-layout">
+    <div className="min-h-screen bg-slate-50 flex flex-col">
       <Toaster position="top-right" />
       
       {/* NAVBAR */}
-      <nav className="navbar">
-        <div className="navbar-brand">
-          <h1>Campus OLX</h1>
-        </div>
-        
-        <div className="navbar-links">
-          <button className={`nav-link ${view === 'dashboard' ? 'active' : ''}`} onClick={() => setView("dashboard")}>
-            Browse
-          </button>
-          <button className={`nav-link ${view === 'create' ? 'active' : ''}`} onClick={() => setView("create")}>
-            Sell Item
-          </button>
-          <button className={`nav-link ${view === 'interests' ? 'active' : ''}`} onClick={() => setView("interests")}>
-            Saved
-          </button>
-          <button className={`nav-link ${view === 'chat' ? 'active' : ''}`} onClick={() => setView("chat")}>
-            Messages
-          </button>
-        </div>
+      <nav className="bg-white shadow-md sticky top-0 z-50">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex justify-between h-16 items-center">
+            <div className="flex-shrink-0 flex items-center">
+              <h1 className="text-2xl font-bold bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent tracking-tight">
+                Campus OLX
+              </h1>
+            </div>
+            
+            <div className="hidden sm:flex space-x-2">
+              <button className={`px-4 py-2 rounded-lg font-medium transition-all duration-200 shadow-sm active:translate-y-1 active:shadow-inner ${view === 'dashboard' ? 'bg-indigo-50 text-indigo-700 ring-1 ring-indigo-200' : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'}`} onClick={() => setView("dashboard")}>
+                Browse
+              </button>
+              <button className={`px-4 py-2 rounded-lg font-medium transition-all duration-200 shadow-sm active:translate-y-1 active:shadow-inner ${view === 'create' ? 'bg-indigo-50 text-indigo-700 ring-1 ring-indigo-200' : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'}`} onClick={() => setView("create")}>
+                Sell Item
+              </button>
+              <button className={`px-4 py-2 rounded-lg font-medium transition-all duration-200 shadow-sm active:translate-y-1 active:shadow-inner ${view === 'interests' ? 'bg-indigo-50 text-indigo-700 ring-1 ring-indigo-200' : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'}`} onClick={() => setView("interests")}>
+                Saved
+              </button>
+              <button className={`px-4 py-2 rounded-lg font-medium transition-all duration-200 shadow-sm active:translate-y-1 active:shadow-inner ${view === 'chat' ? 'bg-indigo-50 text-indigo-700 ring-1 ring-indigo-200' : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'}`} onClick={() => setView("chat")}>
+                Messages
+              </button>
+            </div>
 
-        <div className="navbar-user">
-          <span className="user-email">{user.email.split("@")[0]}</span>
-          <button className="logout-btn" onClick={handleLogout}>
-            Logout
-          </button>
+            <div className="flex items-center space-x-4">
+              <span className="text-sm font-semibold text-slate-700 bg-slate-100 px-3 py-1 rounded-full border border-slate-200">
+                {user.email.split("@")[0]}
+              </span>
+              <button className="px-4 py-2 bg-rose-500 hover:bg-rose-600 text-white font-medium rounded-lg shadow-md hover:shadow-lg transition-all duration-200 active:translate-y-1 active:scale-95 active:shadow-inner" onClick={handleLogout}>
+                Logout
+              </button>
+            </div>
+          </div>
         </div>
       </nav>
 
       {/* PAGE CONTENT */}
-      <main className="main-content container">
+      <main className="flex-1 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {view === "dashboard" && <Dashboard />}
         {view === "create" && <CreateListing />}
         {view === "interests" && <MyInterests />}

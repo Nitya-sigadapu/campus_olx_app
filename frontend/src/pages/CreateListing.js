@@ -44,12 +44,11 @@ function CreateListing() {
       }
 
       await axios.post(
-        "http://localhost:5000/api/listings/create",
+        "/api/listings/create",
         formData,
         {
           headers: {
-            Authorization: `Bearer ${token}`,
-            "Content-Type": "multipart/form-data"
+            Authorization: `Bearer ${token}`
           }
         }
       );
@@ -60,93 +59,132 @@ function CreateListing() {
       }, 1500);
 
     } catch (err) {
-      console.log(err);
+      
+      // console.log("ERROR DATA:", err.response?.data);
+      // console.log("STATUS:", err.response?.status);
+      // console.log("REQUEST HEADERS:", err.config?.headers);
+      // console.log(err);
       toast.error(err.response?.data?.message || "Error creating listing");
+    
     }
   };
 
   return (
-    <div className="create-listing-page">
-      <div className="form-card">
-        <h2>Post a New Listing</h2>
-        <form onSubmit={handleSubmit}>
+    <div className="max-w-2xl mx-auto py-12 px-4 sm:px-6 lg:px-8">
+      <div className="bg-white rounded-2xl shadow-xl border border-gray-100 overflow-hidden transform transition-all duration-300 hover:shadow-2xl">
+        <div className="bg-gradient-to-r from-blue-600 to-indigo-600 px-6 py-8 sm:p-10">
+          <h2 className="text-3xl font-extrabold text-white">Post a New Listing</h2>
+          <p className="mt-2 text-blue-100 text-sm">Fill out the details below to list your item on Campus OLX.</p>
+        </div>
+        
+        <div className="px-6 py-8 sm:p-10">
+          <form onSubmit={handleSubmit} className="space-y-6">
+            <div>
+              <label className="block text-sm font-medium text-gray-700">Item Title</label>
+              <input
+                className="mt-1 block w-full border border-gray-300 rounded-lg shadow-sm py-3 px-4 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors"
+                name="title"
+                placeholder="e.g. Scientific Calculator"
+                value={form.title}
+                onChange={handleChange}
+                required
+              />
+            </div>
 
-          <div className="form-group">
-            <label className="form-label">Item Title</label>
-            <input
-              className="form-input"
-              name="title"
-              placeholder="e.g. Scientific Calculator"
-              value={form.title}
-              onChange={handleChange}
-              required
-            />
-          </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700">Description</label>
+              <textarea
+                className="mt-1 block w-full border border-gray-300 rounded-lg shadow-sm py-3 px-4 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors"
+                name="description"
+                rows="4"
+                placeholder="Briefly describe the item (min 12 characters)"
+                value={form.description}
+                onChange={handleChange}
+                required
+              />
+            </div>
 
-          <div className="form-group">
-            <label className="form-label">Description</label>
-            <input
-              className="form-input"
-              name="description"
-              placeholder="Briefly describe the item"
-              value={form.description}
-              onChange={handleChange}
-              required
-            />
-          </div>
+            <div className="grid grid-cols-1 gap-y-6 gap-x-4 sm:grid-cols-2">
+              <div>
+                <label className="block text-sm font-medium text-gray-700">Category</label>
+                <input
+                  className="mt-1 block w-full border border-gray-300 rounded-lg shadow-sm py-3 px-4 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors"
+                  name="category"
+                  placeholder="e.g. Electronics, Books"
+                  value={form.category}
+                  onChange={handleChange}
+                  required
+                />
+              </div>
 
-          <div className="form-group">
-            <label className="form-label">Category</label>
-            <input
-              className="form-input"
-              name="category"
-              placeholder="e.g. Electronics, Books"
-              value={form.category}
-              onChange={handleChange}
-              required
-            />
-          </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700">Condition</label>
+                <select
+                  className="mt-1 block w-full bg-white border border-gray-300 rounded-lg shadow-sm py-3 px-4 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors"
+                  name="item_condition"
+                  value={form.item_condition}
+                  onChange={handleChange}
+                  required
+                >
+                  <option value="" disabled>Select Condition</option>
+                  <option value="New">New</option>
+                  <option value="Like New">Like New</option>
+                  <option value="Good">Good</option>
+                  <option value="Fair">Fair</option>
+                </select>
+              </div>
+            </div>
 
-          <div className="form-group">
-            <label className="form-label">Condition</label>
-            <input
-              className="form-input"
-              name="item_condition"
-              placeholder="e.g. Like New, Good, Fair"
-              value={form.item_condition}
-              onChange={handleChange}
-              required
-            />
-          </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700">Price (₹)</label>
+              <div className="mt-1 relative rounded-lg shadow-sm">
+                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                  <span className="text-gray-500 sm:text-sm">₹</span>
+                </div>
+                <input
+                  className="block w-full pl-8 border border-gray-300 rounded-lg py-3 px-4 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors"
+                  type="number"
+                  name="price"
+                  placeholder="0.00"
+                  value={form.price}
+                  onChange={handleChange}
+                  required
+                />
+              </div>
+            </div>
 
-          <div className="form-group">
-            <label className="form-label">Price (₹)</label>
-            <input
-              className="form-input"
-              type="number"
-              name="price"
-              placeholder="0.00"
-              value={form.price}
-              onChange={handleChange}
-              required
-            />
-          </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700">Item Photo</label>
+              <div className="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-lg hover:border-indigo-500 transition-colors">
+                <div className="space-y-1 text-center">
+                  <svg className="mx-auto h-12 w-12 text-gray-400" stroke="currentColor" fill="none" viewBox="0 0 48 48" aria-hidden="true">
+                    <path d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                  </svg>
+                  <div className="flex text-sm text-gray-600 justify-center">
+                    <label htmlFor="file-upload" className="relative cursor-pointer bg-white rounded-md font-medium text-indigo-600 hover:text-indigo-500 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-indigo-500">
+                      <span>Upload a file</span>
+                      <input id="file-upload" name="file-upload" type="file" className="sr-only" accept="image/*" onChange={handleImageChange} />
+                    </label>
+                    <p className="pl-1">or drag and drop</p>
+                  </div>
+                  <p className="text-xs text-gray-500">
+                    PNG, JPG, GIF up to 5MB
+                  </p>
+                </div>
+              </div>
+            </div>
 
-          <div className="form-group">
-            <label className="form-label">Item Photo</label>
-            <input
-              className="form-input"
-              type="file"
-              accept="image/*"
-              onChange={handleImageChange}
-            />
-          </div>
+            <div className="pt-4">
+              <button 
+                type="submit" 
+                className="w-full flex justify-center py-3 px-4 border border-transparent rounded-xl shadow-md text-sm font-semibold text-white bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-all duration-200 active:translate-y-1 active:scale-95 active:shadow-inner"
+              >
+                Post Listing
+              </button>
+            </div>
 
-          <button type="submit" className="btn-primary" style={{ width: "100%", marginTop: "10px" }}>
-            Post Listing
-          </button>
-
-        </form>
+          </form>
+        </div>
       </div>
     </div>
   );

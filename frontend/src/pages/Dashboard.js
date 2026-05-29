@@ -3,7 +3,7 @@ import axios from "axios";
 import SellerProfileModal from "../components/SellerProfileModal";
 import "../App.css";
 
-const API = "http://localhost:5000";
+const API = "";
 
 function Dashboard() {
 
@@ -48,7 +48,7 @@ function Dashboard() {
         setListings(res.data);
 
       } catch (err) {
-        console.log(err);
+        // console.log(err);
       }
 
     };
@@ -77,7 +77,7 @@ function Dashboard() {
       setListings(prev => prev.filter(item => item.id !== id));
 
     } catch (err) {
-      console.log(err);
+      // console.log(err);
     }
 
 
@@ -94,16 +94,24 @@ function Dashboard() {
         return;
       }
 
+      const token = localStorage.getItem("token");
+
       await axios.post(
         `${API}/api/interests`,
         {
           userId: user.id,
           listingId: id
+        },
+        {
+          headers: { Authorization: `Bearer ${token}` }
         }
       );
 
       const res = await axios.get(
-        `${API}/api/listings/${id}/contact`
+        `${API}/api/listings/${id}/contact`,
+        {
+          headers: { Authorization: `Bearer ${token}` }
+        }
       );
 
       setContacts(prev => ({
@@ -112,101 +120,110 @@ function Dashboard() {
       }));
 
     } catch (err) {
-      console.log(err);
+      // console.log(err);
     }
 
 
   };
 
   return (
-    <div className="dashboard-page">
+    <div className="space-y-8">
 
-      <div className="toolbar">
+      {/* Toolbar */}
+      <div className="bg-white p-4 rounded-2xl shadow-md border border-gray-100 flex flex-col md:flex-row gap-4">
         <input
-          className="search-bar"
+          className="flex-1 min-w-[200px] border border-gray-300 rounded-lg shadow-sm py-2 px-4 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-colors"
           placeholder="Search books, electronics..."
           value={search}
           onChange={(e) => setSearch(e.target.value)}
         />
         <input
-          className="filter-input"
+          className="w-full md:w-32 border border-gray-300 rounded-lg shadow-sm py-2 px-4 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-colors"
           placeholder="Category"
           value={category}
           onChange={(e) => setCategory(e.target.value)}
         />
         <input
-          className="filter-input"
+          className="w-full md:w-32 border border-gray-300 rounded-lg shadow-sm py-2 px-4 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-colors"
           placeholder="Min Price"
           value={minPrice}
           onChange={(e) => setMinPrice(e.target.value)}
         />
         <input
-          className="filter-input"
+          className="w-full md:w-32 border border-gray-300 rounded-lg shadow-sm py-2 px-4 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-colors"
           placeholder="Max Price"
           value={maxPrice}
           onChange={(e) => setMaxPrice(e.target.value)}
         />
       </div>
 
-      <h2 className="page-title">Marketplace</h2>
+      <div>
+        <h2 className="text-3xl font-extrabold text-slate-800 tracking-tight">Marketplace</h2>
+        <p className="text-slate-500 mt-1">Discover items listed by students on campus.</p>
+      </div>
 
-      <div className="listing-grid">
+      {/* Grid */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
 
         {listings.map(item => (
 
-          <div key={item.id} className="listing-card">
+          <div key={item.id} className="bg-white rounded-2xl shadow-md overflow-hidden flex flex-col border border-gray-100 transform transition-all duration-300 hover:-translate-y-2 hover:shadow-xl">
 
             {item.image_url ? (
               <img
-                src={`http://localhost:5000${item.image_url}`}
+                src={item.image_url.startsWith('http') ? item.image_url : `/uploads/${item.image_url.split('/').pop()}`}
                 alt={item.title}
-                className="card-image"
+                className="h-48 w-full object-cover"
               />
             ) : (
-              <div className="card-image-placeholder">
+              <div className="h-48 w-full bg-slate-100 flex items-center justify-center text-slate-400 font-medium">
                 No Image Available
               </div>
             )}
 
-            <div className="card-content">
-              <h3 className="listing-title">
-                {item.title}
-              </h3>
+            <div className="p-5 flex flex-col flex-1">
+              <div className="flex justify-between items-start mb-2">
+                <h3 className="text-lg font-bold text-slate-800 truncate pr-2">
+                  {item.title}
+                </h3>
+                <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-green-100 text-green-800">
+                  ₹{item.price}
+                </span>
+              </div>
 
-              <p className="price">
-                ₹{item.price}
-              </p>
-
-              <p className="description" style={{fontSize: "0.9rem", color: "var(--text-main)", margin: "0 0 10px 0"}}>
+              <p className="text-sm text-slate-600 line-clamp-2 mb-3 flex-1">
                 {item.description}
               </p>
 
-              <p className="condition" style={{fontSize: "0.85rem", color: "var(--text-muted)", margin: "0 0 10px 0"}}>
-                Condition: <strong>{item.item_condition}</strong>
-              </p>
-
-              <p className="interest-count">
-                {item.interest_count || 0} students interested
-              </p>
-
-              <p className="seller">
-                Seller: <span
-                  className="seller-link"
-                  onClick={() => setSelectedSeller({ id: item.seller_id, name: item.seller_name })}
-                >
-                  {item.seller_name || "Unknown"}
-                </span>
-              </p>
+              <div className="space-y-1 mb-4">
+                <p className="text-xs text-slate-500 flex justify-between">
+                  <span>Condition:</span>
+                  <span className="font-semibold text-slate-700">{item.item_condition}</span>
+                </p>
+                <p className="text-xs text-slate-500 flex justify-between">
+                  <span>Interested:</span>
+                  <span className="font-semibold text-indigo-600">{item.interest_count || 0} students</span>
+                </p>
+                <p className="text-xs text-slate-500 flex justify-between">
+                  <span>Seller:</span>
+                  <span
+                    className="font-semibold text-blue-600 cursor-pointer hover:underline"
+                    onClick={() => setSelectedSeller({ id: item.seller_id, name: item.seller_name })}
+                  >
+                    {item.seller_name || "Unknown"}
+                  </span>
+                </p>
+              </div>
 
               {contacts[item.id] && (
-                <p className="contact">
-                  Contact: <strong>{contacts[item.id]}</strong>
-                </p>
+                <div className="mb-4 p-2 bg-green-50 border border-green-200 rounded-lg text-sm text-green-800 text-center font-medium">
+                  Contact: {contacts[item.id]}
+                </div>
               )}
 
-              <div className="card-actions">
+              <div className="flex space-x-2 mt-auto">
                 <button
-                  className="btn-interest"
+                  className={`flex-1 py-2 px-4 rounded-lg font-semibold text-sm transition-all duration-200 shadow-sm active:translate-y-1 active:scale-95 active:shadow-inner ${item.seller_id === user.id ? 'bg-gray-100 text-gray-400 cursor-not-allowed' : 'bg-indigo-600 hover:bg-indigo-700 text-white shadow-md hover:shadow-lg'}`}
                   onClick={() => showContact(item.id)}
                   disabled={item.seller_id === user.id}
                 >
@@ -214,7 +231,7 @@ function Dashboard() {
                 </button>
 
                 <button
-                  className="btn-delete"
+                  className={`flex-1 py-2 px-4 rounded-lg font-semibold text-sm transition-all duration-200 shadow-sm active:translate-y-1 active:scale-95 active:shadow-inner ${item.seller_id !== user.id ? 'bg-gray-100 text-gray-400 cursor-not-allowed hidden' : 'bg-rose-50 hover:bg-rose-100 text-rose-600 border border-rose-200 hover:border-rose-300'}`}
                   onClick={() => deleteListing(item.id)}
                   disabled={item.seller_id !== user.id}
                 >
@@ -229,14 +246,16 @@ function Dashboard() {
 
       </div>
 
-      <div className="pagination">
+      <div className="flex justify-center space-x-4 pt-6 pb-12">
         <button
+          className={`px-6 py-2 rounded-lg font-medium transition-all duration-200 active:translate-y-1 active:scale-95 active:shadow-inner ${page === 1 ? 'bg-slate-100 text-slate-400 cursor-not-allowed' : 'bg-white border border-slate-300 text-slate-700 hover:bg-slate-50 shadow-sm'}`}
           onClick={() => setPage(page - 1)}
           disabled={page === 1}
         >
-          Previous Page
+          Previous
         </button>
         <button
+          className={`px-6 py-2 rounded-lg font-medium transition-all duration-200 active:translate-y-1 active:scale-95 active:shadow-inner ${listings.length < 12 ? 'bg-slate-100 text-slate-400 cursor-not-allowed' : 'bg-white border border-slate-300 text-slate-700 hover:bg-slate-50 shadow-sm'}`}
           onClick={() => setPage(page + 1)}
           disabled={listings.length < 12}
         >

@@ -3,7 +3,7 @@ import { io } from "socket.io-client";
 import axios from "axios";
 import "./Chat.css";
 
-const socket = io("http://localhost:5000");
+const socket = io();
 
 function Chat() {
   const user = JSON.parse(localStorage.getItem("user")) || {};
@@ -52,7 +52,7 @@ function Chat() {
   useEffect(() => {
     const fetchUsers = async () => {
       try {
-        const usersRes = await axios.get("http://localhost:5000/api/users");
+        const usersRes = await axios.get("/api/users");
         const otherUsers = usersRes.data.filter(u => u.id !== user.id);
         
         const formattedUsers = otherUsers.map(u => ({
@@ -62,10 +62,10 @@ function Chat() {
         
         setContacts(formattedUsers);
 
-        const recentRes = await axios.get(`http://localhost:5000/api/messages/recent/${user.id}`);
+        const recentRes = await axios.get(`/api/messages/recent/${user.id}`);
         setRecentMessages(recentRes.data);
       } catch (err) {
-        console.error("Failed to load users or recent messages", err);
+        // console.error("Failed to load users or recent messages", err);
       }
     };
 
@@ -89,12 +89,10 @@ function Chat() {
 
     // Fetch history
     try {
-      const history = await axios.get(
-        `http://localhost:5000/api/messages/${user.id}/${contact.id}`
-      );
+      const history = await axios.get(`/api/messages/${user.id}/${contact.id}`);
       setMessages(history.data);
     } catch (err) {
-      console.log(err);
+      // console.log(err);
     }
   };
 
@@ -202,35 +200,27 @@ function Chat() {
   );
 
   return (
-    <div className="messaging-container">
+    <div className="flex h-[calc(100vh-100px)] bg-white rounded-2xl shadow-xl overflow-hidden border border-gray-100 relative">
       {/* TOAST NOTIFICATION */}
       {toast && (
-        <div className="chat-toast">
-          {toast}
+        <div className="absolute top-4 right-4 z-50 bg-indigo-600 text-white px-4 py-3 rounded-xl shadow-lg flex items-center space-x-2 animate-bounce">
+          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"></path></svg>
+          <span className="font-medium text-sm">{toast}</span>
         </div>
       )}
 
       {/* SIDEBAR */}
-      <div className={`chat-sidebar ${showMobileChat ? 'hidden' : ''}`}>
-        <div className="sidebar-header">
-          <h2>Chats</h2>
-          <div className="header-icons">
-            <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor">
-              <path d="M12 20.664a9.163 9.163 0 0 1-6.521-2.702.977.977 0 0 1 1.381-1.381 7.269 7.269 0 0 0 10.024.244.977.977 0 0 1 1.313 1.445A9.192 9.192 0 0 1 12 20.664zm7.965-6.112a.977.977 0 0 1-.944-1.229 7.26 7.26 0 0 0-4.8-8.804.977.977 0 0 1 .594-1.86 9.212 9.212 0 0 1 6.092 11.169.976.976 0 0 1-.942.724zm-16.025-.39a.977.977 0 0 1-.753-.356 9.183 9.183 0 0 1 1.007-11.446.976.976 0 1 1 1.382 1.38 7.234 7.234 0 0 0-.794 9.014.974.974 0 0 1-.842 1.408z"></path>
-            </svg>
-            <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor">
-              <path d="M12 7a2 2 0 1 0-.001-4.001A2 2 0 0 0 12 7zm0 2a2 2 0 1 0-.001 3.999A2 2 0 0 0 12 9zm0 6a2 2 0 1 0-.001 3.999A2 2 0 0 0 12 15z"></path>
-            </svg>
+      <div className={`w-full md:w-80 border-r border-gray-100 flex flex-col bg-slate-50 ${showMobileChat ? 'hidden md:flex' : 'flex'}`}>
+        <div className="p-4 border-b border-gray-200 bg-white">
+          <div className="flex justify-between items-center mb-4">
+            <h2 className="text-xl font-bold text-slate-800">Messages</h2>
           </div>
-        </div>
-
-        <div className="search-container">
-          <div className="search-wrapper">
-            <svg className="search-icon" viewBox="0 0 24 24">
-              <path d="M15.009 13.805h-.636l-.22-.219a5.184 5.184 0 0 0 1.256-3.386 5.207 5.207 0 1 0-5.207 5.208 5.183 5.183 0 0 0 3.385-1.255l.221.22v.635l4.004 3.999 1.194-1.195-3.997-4.007zm-4.808 0a3.605 3.605 0 1 1 0-7.21 3.605 3.605 0 0 1 0 7.21z"></path>
-            </svg>
+          <div className="relative">
+            <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+              <svg className="h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+            </div>
             <input
-              className="search-input"
+              className="block w-full pl-10 pr-3 py-2 border border-gray-200 rounded-xl leading-5 bg-gray-50 placeholder-gray-400 focus:outline-none focus:bg-white focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-colors sm:text-sm"
               placeholder="Search users..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
@@ -238,31 +228,38 @@ function Chat() {
           </div>
         </div>
 
-        <div className="contacts-list">
+        <div className="flex-1 overflow-y-auto">
           {filteredContacts.length === 0 ? (
-            <div style={{ padding: '20px', textAlign: 'center', color: 'var(--text-muted)', fontSize: '0.9rem' }}>
+            <div className="p-8 text-center text-gray-500 text-sm">
               No users found.
             </div>
           ) : (
             filteredContacts.map((c) => (
               <div
                 key={c.id}
-                className={`contact-item ${activeContact?.id === c.id ? "active" : ""}`}
+                className={`flex items-center p-4 cursor-pointer transition-colors border-b border-gray-100 ${activeContact?.id === c.id ? "bg-indigo-50" : "hover:bg-gray-100 bg-white"}`}
                 onClick={() => openChat(c)}
               >
-                <div className="contact-avatar">{getInitials(c.name)}</div>
-                <div className="contact-info">
-                  <div className="contact-header">
-                    <span className="contact-name">{c.name}</span>
+                <div className="flex-shrink-0 relative">
+                  <div className="h-12 w-12 rounded-full bg-gradient-to-br from-indigo-400 to-blue-500 flex items-center justify-center text-white font-bold text-lg shadow-sm">
+                    {getInitials(c.name)}
                   </div>
-                  <div className="contact-message-row">
-                    <span className="contact-last-msg" style={{ color: unreadCounts[c.id] > 0 ? '#111827' : 'var(--text-muted)', fontWeight: unreadCounts[c.id] > 0 ? '600' : 'normal' }}>
-                      {recentMessages[c.id] ? (recentMessages[c.id].message.length > 25 ? recentMessages[c.id].message.substring(0, 25) + "..." : recentMessages[c.id].message) : "Click to message"}
-                    </span>
+                  {unreadCounts[c.id] > 0 && (
+                    <span className="absolute top-0 right-0 block h-3.5 w-3.5 rounded-full ring-2 ring-white bg-red-500"></span>
+                  )}
+                </div>
+                <div className="ml-4 flex-1 overflow-hidden">
+                  <div className="flex items-center justify-between">
+                    <p className="text-sm font-semibold text-slate-800 truncate">{c.name}</p>
                     {unreadCounts[c.id] > 0 && (
-                      <div className="unread-badge">{unreadCounts[c.id]}</div>
+                      <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800">
+                        {unreadCounts[c.id]}
+                      </span>
                     )}
                   </div>
+                  <p className={`text-sm truncate mt-1 ${unreadCounts[c.id] > 0 ? 'text-slate-800 font-medium' : 'text-slate-500'}`}>
+                    {recentMessages[c.id] ? recentMessages[c.id].message : "Click to message"}
+                  </p>
                 </div>
               </div>
             ))
@@ -272,41 +269,38 @@ function Chat() {
 
       {/* MAIN CHAT AREA */}
       {activeContact ? (
-        <div className={`chat-main ${!showMobileChat ? 'hidden' : ''}`}>
+        <div className={`flex-1 flex flex-col bg-white ${!showMobileChat ? 'hidden md:flex' : 'flex'}`}>
           
           {/* Header */}
-          <div className="chat-header">
-            <button className="back-btn" onClick={() => setShowMobileChat(false)}>
-              ←
+          <div className="h-16 px-4 flex items-center border-b border-gray-100 bg-white shadow-sm z-10">
+            <button className="md:hidden mr-4 text-gray-500 hover:text-gray-700 active:scale-95 transition-transform" onClick={() => setShowMobileChat(false)}>
+              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
             </button>
-            <div className="chat-header-avatar">{getInitials(activeContact.name)}</div>
-            <div className="chat-header-info">
-              <div className="chat-header-name">{activeContact.name}</div>
+            <div className="h-10 w-10 rounded-full bg-gradient-to-br from-indigo-400 to-blue-500 flex items-center justify-center text-white font-bold shadow-sm">
+              {getInitials(activeContact.name)}
             </div>
-            <div className="chat-header-actions">
-              <svg viewBox="0 0 24 24"><path d="M15.9 14.3H15l-.3-.3c1-1.1 1.6-2.7 1.6-4.3 0-3.7-3-6.7-6.7-6.7S3 6 3 9.7s3 6.7 6.7 6.7c1.6 0 3.2-.6 4.3-1.6l.3.3v.8l5.1 5.1 1.5-1.5-5-5.2zm-6.2 0c-2.6 0-4.6-2.1-4.6-4.6s2.1-4.6 4.6-4.6 4.6 2.1 4.6 4.6-2 4.6-4.6 4.6z"></path></svg>
-              <svg viewBox="0 0 24 24"><path d="M19.005 3.175H4.674C3.642 3.175 3 3.789 3 4.821V21.02l3.544-3.514h12.461c1.033 0 2.064-1.06 2.064-2.093V4.821c-.001-1.032-1.032-1.646-2.064-1.646zm-4.989 9.869H7.041V11.1h6.975v1.944zm3-4H7.041V7.1h9.975v1.944z"></path></svg>
-              <svg viewBox="0 0 24 24"><path d="M12 7a2 2 0 1 0-.001-4.001A2 2 0 0 0 12 7zm0 2a2 2 0 1 0-.001 3.999A2 2 0 0 0 12 9zm0 6a2 2 0 1 0-.001 3.999A2 2 0 0 0 12 15z"></path></svg>
+            <div className="ml-3 font-semibold text-slate-800">
+              {activeContact.name}
             </div>
           </div>
 
           {/* Messages Window */}
-          <div className="chat-messages">
-            <div className="date-separator">Today</div>
+          <div className="flex-1 overflow-y-auto p-4 space-y-4 bg-slate-50">
+            <div className="flex justify-center mb-6">
+              <span className="px-3 py-1 bg-gray-200 text-gray-600 rounded-full text-xs font-medium shadow-sm">Today</span>
+            </div>
             {messages.map((m, i) => {
               const isMe = m.senderId === user.id || m.sender_id === user.id;
               return (
-                <div key={i} className={`message-wrapper ${isMe ? "me" : "them"}`}>
-                  <div className="message-bubble">
-                    <div className="message-text">{m.message}</div>
-                    <div className="message-meta">
-                      <span className="message-time">{formatTime(m.created_at || m.time)}</span>
+                <div key={i} className={`flex ${isMe ? "justify-end" : "justify-start"}`}>
+                  <div className={`max-w-[75%] rounded-2xl px-4 py-2 shadow-sm ${isMe ? "bg-indigo-600 text-white rounded-br-none" : "bg-white text-slate-800 rounded-bl-none border border-gray-100"}`}>
+                    <div className="text-[15px] leading-relaxed break-words">{m.message}</div>
+                    <div className={`text-[11px] mt-1 text-right flex items-center justify-end space-x-1 ${isMe ? "text-indigo-200" : "text-gray-400"}`}>
+                      <span>{formatTime(m.created_at || m.time)}</span>
                       {isMe && (
-                        <span className="message-ticks">
-                          <svg viewBox="0 0 16 15">
-                            <path d="M15.01 3.316l-.478-.372a.365.365 0 0 0-.51.063L8.666 9.879a.32.32 0 0 1-.484.033l-.358-.325a.319.319 0 0 0-.484.032l-.378.483a.418.418 0 0 0 .036.541l1.32 1.266c.143.14.361.125.484-.033l6.272-8.048a.366.366 0 0 0-.064-.512zm-4.1 0l-.478-.372a.365.365 0 0 0-.51.063L4.566 9.879a.32.32 0 0 1-.484.033L1.891 7.769a.366.366 0 0 0-.515.006l-.423.433a.364.364 0 0 0 .006.514l3.258 3.185c.143.14.361.125.484-.033l6.272-8.048a.365.365 0 0 0-.063-.51z"></path>
-                          </svg>
-                        </span>
+                        <svg className="w-3.5 h-3.5" viewBox="0 0 16 15" fill="currentColor">
+                          <path d="M15.01 3.316l-.478-.372a.365.365 0 0 0-.51.063L8.666 9.879a.32.32 0 0 1-.484.033l-.358-.325a.319.319 0 0 0-.484.032l-.378.483a.418.418 0 0 0 .036.541l1.32 1.266c.143.14.361.125.484-.033l6.272-8.048a.366.366 0 0 0-.064-.512zm-4.1 0l-.478-.372a.365.365 0 0 0-.51.063L4.566 9.879a.32.32 0 0 1-.484.033L1.891 7.769a.366.366 0 0 0-.515.006l-.423.433a.364.364 0 0 0 .006.514l3.258 3.185c.143.14.361.125.484-.033l6.272-8.048a.365.365 0 0 0-.063-.51z"></path>
+                        </svg>
                       )}
                     </div>
                   </div>
@@ -317,19 +311,19 @@ function Chat() {
           </div>
 
           {/* Input Area */}
-          <form onSubmit={sendMessage} className="chat-input-area">
-            <div className="input-actions">
-              <svg viewBox="0 0 24 24"><path d="M9.153 11.603c.795 0 1.439-.879 1.439-1.962s-.644-1.962-1.439-1.962-1.439.879-1.439 1.962.644 1.962 1.439 1.962zm-3.204 1.362c-.026-.307-.131 5.218 6.063 5.551 6.066-.25 6.066-5.551 6.066-5.551-6.078 1.416-12.129 0-12.129 0zm11.363 1.108s-.669 1.959-5.051 1.959c-3.505 0-5.388-1.164-5.607-1.959 0 0 5.912 1.055 10.658 0zM11.804 1.011C5.609 1.011.978 6.033.978 12.228s4.826 10.761 11.021 10.761S23.02 18.423 23.02 12.228c.001-6.195-5.021-11.217-11.216-11.217zM12 21.354c-5.273 0-9.381-3.886-9.381-9.159s3.942-9.548 9.215-9.548 9.548 4.275 9.548 9.548c-.001 5.272-4.109 9.159-9.382 9.159zm3.108-9.751c.795 0 1.439-.879 1.439-1.962s-.644-1.962-1.439-1.962-1.439.879-1.439 1.962.644 1.962 1.439 1.962z"></path></svg>
-              <svg viewBox="0 0 24 24"><path d="M1.816 15.556v.002c0 1.502.584 2.912 1.646 3.972s2.472 1.647 3.974 1.647a5.58 5.58 0 0 0 3.972-1.645l9.547-9.548c.769-.768 1.147-1.767 1.058-2.817-.079-.968-.548-1.927-1.319-2.698-1.594-1.592-4.068-1.711-5.517-.262l-7.916 7.915c-.881.881-.792 2.25.214 3.261.959.958 2.423 1.053 3.263.215l5.511-5.512c.28-.28.267-.722.053-.936l-.244-.244c-.191-.191-.567-.349-.957.04l-5.506 5.506c-.18.18-.635.127-.976-.214-.098-.097-.576-.613-.213-.973l7.915-7.917c.818-.817 2.267-.699 3.23.262.5.501.802 1.1.849 1.685.051.573-.156 1.111-.589 1.543l-9.547 9.549a3.97 3.97 0 0 1-2.829 1.171 3.975 3.975 0 0 1-2.83-1.173 3.973 3.973 0 0 1-1.172-2.828c0-1.071.415-2.076 1.172-2.83l7.209-7.211c.157-.157.264-.579.028-.814L11.5 4.36a.57.57 0 0 0-.834.018l-7.205 7.207a5.577 5.577 0 0 0-1.645 3.971z"></path></svg>
-            </div>
+          <form onSubmit={sendMessage} className="p-4 bg-white border-t border-gray-100 flex items-center gap-3">
             <input
-              className="message-input"
+              className="flex-1 bg-gray-50 border border-gray-200 rounded-full py-3 px-5 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:bg-white transition-all text-sm"
               placeholder="Type a message..."
               value={text}
               onChange={(e) => setText(e.target.value)}
             />
-            <button type="submit" className="send-btn">
-              <svg className="send-icon" viewBox="0 0 24 24">
+            <button 
+              type="submit" 
+              className="h-12 w-12 rounded-full bg-indigo-600 text-white flex items-center justify-center shadow-md hover:bg-indigo-700 hover:shadow-lg transition-all active:scale-90 active:shadow-inner"
+              disabled={!text.trim()}
+            >
+              <svg className="w-5 h-5 ml-1" fill="currentColor" viewBox="0 0 24 24">
                 <path d="M1.101 21.757L23.8 12.028 1.101 2.3l.011 7.912 13.623 1.816-13.623 1.817-.011 7.912z"></path>
               </svg>
             </button>
@@ -337,9 +331,12 @@ function Chat() {
         </div>
       ) : (
         /* EMPTY STATE */
-        <div className={`empty-chat ${showMobileChat ? 'hidden' : ''}`}>
-          <h3>Campus OLX Chat</h3>
-          <p>Select a user from the left sidebar to start messaging.</p>
+        <div className={`flex-1 flex flex-col items-center justify-center bg-slate-50 ${showMobileChat ? 'hidden md:flex' : 'hidden md:flex'}`}>
+          <div className="h-24 w-24 bg-indigo-100 text-indigo-500 rounded-full flex items-center justify-center mb-6 shadow-sm">
+            <svg className="w-12 h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path></svg>
+          </div>
+          <h3 className="text-2xl font-bold text-slate-800 mb-2">Campus OLX Chat</h3>
+          <p className="text-slate-500 text-sm">Select a user from the left sidebar to start messaging.</p>
         </div>
       )}
     </div>

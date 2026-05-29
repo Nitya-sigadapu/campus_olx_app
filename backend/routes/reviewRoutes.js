@@ -22,7 +22,7 @@ router.post("/reviews", (req, res) => {
         if (err.code === "ER_DUP_ENTRY") {
           return res.status(400).json({ message: "You have already reviewed this seller." });
         }
-        console.error(err);
+        // console.error(err);
         return res.status(500).json({ message: "Database error." });
       }
       res.json({ message: "Review submitted successfully!" });
@@ -44,7 +44,7 @@ router.get("/reviews/:sellerId", (req, res) => {
 
   db.query(query, [sellerId], (err, reviews) => {
     if (err) {
-      console.error(err);
+      // console.error(err);
       return res.status(500).json(err);
     }
 

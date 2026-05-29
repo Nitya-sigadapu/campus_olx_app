@@ -1,4 +1,8 @@
-require("dotenv").config({ path: "../.env" });
+
+require("dotenv").config({ path: "./config/.env" });
+// console.log("Cloud Name:", process.env.CLOUDINARY_CLOUD_NAME);
+// console.log("API Key:", process.env.CLOUDINARY_API_KEY);
+// console.log("API Secret Exists:", !!process.env.CLOUDINARY_API_SECRET);
 const express = require("express");
 const cors = require("cors");
 const http = require("http");
@@ -19,6 +23,7 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
+
 /* ROUTES */
 app.use("/api/auth", authRoutes);
 app.use("/api/listings", listingRoutes);
@@ -28,8 +33,13 @@ app.use("/api", messageRoutes);
 app.use("/api", reviewRoutes);
 
 
-/* SERVE UPLOADS */
+/* SERVE UPLOADS - Kept for old listings */
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
+
+/* GLOBAL ERROR HANDLER FOR API */
+app.use("/api", (err, req, res, next) => {
+  res.status(500).json({ message: err.message || "Internal Server Error" });
+});
 
 /* SERVE FRONTEND */
 app.use(express.static(path.join(__dirname, "../frontend/build")));
@@ -51,16 +61,16 @@ const io = new Server(server, {
 
 io.on("connection", (socket) => {
 
-  console.log("User connected:", socket.id);
+  // console.log("User connected:", socket.id);
 
   socket.on("join", (userId) => {
   const room = String(userId);   
-  console.log("Joining room:", room);
+  // console.log("Joining room:", room);
   socket.join(room);
 });
 
   socket.on("sendMessage", async (data) => {
-    console.log("Message received:", data);
+    // console.log("Message received:", data);
 
     if (!data.message || typeof data.message !== 'string' || !data.message.trim()) {
       return;
@@ -86,13 +96,13 @@ io.on("connection", (socket) => {
       io.to(String(senderId)).emit("receiveMessage", msg);
 
     } catch (err) {
-      console.log(err);
+      // console.log(err);
     }
 
   });
 
   socket.on("disconnect", () => {
-    console.log("User disconnected:", socket.id);
+    // console.log("User disconnected:", socket.id);
   });
 
 });
@@ -101,5 +111,5 @@ io.on("connection", (socket) => {
 const PORT = process.env.PORT || 5000;
 
 server.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
+  // console.log(`Server running on port ${PORT}`);
 });

@@ -16,7 +16,7 @@ router.get("/messages/:user1/:user2", (req, res) => {
   db.query(sql, [user1, user2, user2, user1], (err, result) => {
 
     if (err) {
-      console.log(err);
+      // console.log(err);
       return res.status(500).json({ error: "DB error" });
     }
 
@@ -48,7 +48,7 @@ router.get("/messages/recent/:userId", (req, res) => {
 
   db.query(query, [userId, userId], (err, results) => {
     if (err) {
-      console.log(err);
+      // console.log(err);
       return res.status(500).json(err);
     }
     

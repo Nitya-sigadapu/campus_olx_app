@@ -35,7 +35,7 @@ function Login({ setUser }) {
 
     try {
       const res = await axios.post(
-        "http://localhost:5000/api/auth/signup",
+        "/api/auth/signup",
         { email, password, contact }
       );
 
@@ -54,7 +54,7 @@ function Login({ setUser }) {
 
     try {
       const res = await axios.post(
-        "http://localhost:5000/api/auth/verify-otp",
+        "/api/auth/verify-otp",
         { email, otp }
       );
 
@@ -79,7 +79,7 @@ function Login({ setUser }) {
 
     try {
       const res = await axios.post(
-        "http://localhost:5000/api/auth/login",
+        "/api/auth/login",
         { email, password }
       );
 
@@ -96,48 +96,60 @@ function Login({ setUser }) {
 
 
   return (
-    <div className="login-page">
+    <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-white to-blue-50 flex items-center justify-center p-4">
 
-      <div className="login-card">
+      <div className="bg-white rounded-3xl shadow-xl w-full max-w-md p-8 border border-gray-100 transform transition-all hover:shadow-2xl">
 
-        <h1 className="login-title">Campus OLX</h1>
-
-        <h2>
-          {otpStep ? "Enter OTP" : signup ? "Create Account" : "Login"}
-        </h2>
+        <div className="text-center mb-8">
+          <h1 className="text-4xl font-extrabold bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent tracking-tight mb-2">
+            Campus OLX
+          </h1>
+          <h2 className="text-xl font-medium text-slate-600">
+            {otpStep ? "Enter Verification Code" : signup ? "Create your Account" : "Welcome Back"}
+          </h2>
+        </div>
 
 
         {!otpStep && (
-          <form onSubmit={signup ? handleSignup : handleLogin}>
+          <form onSubmit={signup ? handleSignup : handleLogin} className="space-y-5">
 
-            <input
-              className="login-input"
-              type="email"
-              placeholder="Institute Email (@iiti.ac.in)"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-            />
+            <div>
+              <input
+                className="w-full border border-gray-300 rounded-xl py-3 px-4 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors bg-slate-50 focus:bg-white"
+                type="email"
+                placeholder="Institute Email (@iiti.ac.in)"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+              />
+            </div>
 
-            <input
-              className="login-input"
-              type="password"
-              placeholder="Password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-            />
+            <div>
+              <input
+                className="w-full border border-gray-300 rounded-xl py-3 px-4 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors bg-slate-50 focus:bg-white"
+                type="password"
+                placeholder="Password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+              />
+            </div>
 
             {signup && (
-              <input
-                className="login-input"
-                type="text"
-                placeholder="Contact Number"
-                value={contact}
-                onChange={(e) => setContact(e.target.value)}
-              />
+              <div>
+                <input
+                  className="w-full border border-gray-300 rounded-xl py-3 px-4 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors bg-slate-50 focus:bg-white"
+                  type="text"
+                  placeholder="Contact Number (10 digits)"
+                  value={contact}
+                  onChange={(e) => setContact(e.target.value)}
+                />
+              </div>
             )}
 
-            <button className="login-btn" type="submit">
-              {signup ? "Signup" : "Login"}
+            <button 
+              type="submit"
+              className="w-full flex justify-center py-3.5 px-4 rounded-xl shadow-md text-sm font-bold text-white bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-all duration-200 active:translate-y-1 active:scale-95 active:shadow-inner"
+            >
+              {signup ? "Sign Up" : "Sign In"}
             </button>
 
           </form>
@@ -145,17 +157,23 @@ function Login({ setUser }) {
 
 
         {otpStep && (
-          <form onSubmit={handleVerify}>
+          <form onSubmit={handleVerify} className="space-y-5">
 
-            <input
-              className="login-input"
-              type="number"
-              placeholder="Enter OTP"
-              value={otp}
-              onChange={(e) => setOtp(e.target.value)}
-            />
+            <div>
+              <input
+                className="w-full border border-gray-300 rounded-xl py-3 px-4 text-center text-2xl tracking-[0.5em] focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors bg-slate-50 focus:bg-white"
+                type="number"
+                placeholder="000000"
+                value={otp}
+                onChange={(e) => setOtp(e.target.value)}
+              />
+              <p className="text-center text-sm text-slate-500 mt-2">Check your email for the OTP.</p>
+            </div>
 
-            <button className="login-btn">
+            <button 
+              type="submit"
+              className="w-full flex justify-center py-3.5 px-4 rounded-xl shadow-md text-sm font-bold text-white bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-emerald-500 transition-all duration-200 active:translate-y-1 active:scale-95 active:shadow-inner"
+            >
               Verify OTP
             </button>
 
@@ -164,12 +182,17 @@ function Login({ setUser }) {
 
 
         {!otpStep && (
-          <button
-            className="switch-btn"
-            onClick={() => setSignup(!signup)}
-          >
-            {signup ? "Go to Login" : "Create Account"}
-          </button>
+          <div className="mt-8 text-center">
+            <p className="text-sm text-slate-500">
+              {signup ? "Already have an account?" : "Don't have an account?"}
+            </p>
+            <button
+              className="mt-2 text-sm font-semibold text-indigo-600 hover:text-indigo-500 transition-colors focus:outline-none active:scale-95 active:translate-y-0.5 inline-block"
+              onClick={() => setSignup(!signup)}
+            >
+              {signup ? "Sign in instead" : "Create one now"}
+            </button>
+          </div>
         )}
 
       </div>

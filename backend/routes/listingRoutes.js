@@ -10,7 +10,7 @@ router.post("/create", authMiddleware, upload.single("image"), listingController
 router.get("/", listingController.getListings);
 
 // CONTACT ROUTE FIRST
-router.get("/:id/contact", listingController.showContact);
+router.get("/:id/contact", authMiddleware, listingController.showContact);
 
 router.put("/:id", authMiddleware, listingController.updateListing);
 

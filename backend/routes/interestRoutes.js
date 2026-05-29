@@ -14,7 +14,7 @@ router.post("/interests", (req, res) => {
     (err) => {
 
       if (err) {
-        console.log(err);
+        // console.log(err);
         return res.status(500).json(err);
       }
 
@@ -41,7 +41,7 @@ router.get("/interests/:userId", (req, res) => {
     (err, result) => {
 
       if (err) {
-        console.log(err);
+        // console.log(err);
         return res.status(500).json(err);
       }
 
@@ -64,7 +64,7 @@ router.delete("/interests", (req, res) => {
     (err) => {
 
       if (err) {
-        console.log(err);
+        // console.log(err);
         return res.status(500).json(err);
       }
 

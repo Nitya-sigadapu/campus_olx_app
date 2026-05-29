@@ -1,5 +1,14 @@
 {
+  "name": "campus-olx-root",
+  "version": "1.0.0",
+  "scripts": {
+    "start": "cd backend && npm start",
+    "build": "cd frontend && npm install && npm run build && cd ../backend && npm install"
+  },
   "dependencies": {
+    "cloudinary": "^1.41.3",
+    "dotenv": "^17.4.2",
+    "multer-storage-cloudinary": "^4.0.0",
     "path": "^0.12.7"
   }
 }

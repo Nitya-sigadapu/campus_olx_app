@@ -10,7 +10,7 @@ function generateOTP(){
 // ---------------- SIGNUP ----------------
 exports.signup = async (req,res)=>{
 
-  console.log("Signup request:", req.body);
+  // console.log("Signup request:", req.body);
 
   const { email, password,contact } = req.body;
 
@@ -40,14 +40,14 @@ exports.signup = async (req,res)=>{
     async (err,result)=>{
 
       if(err){
-        console.log(err);
+        // console.log(err);
         return res.status(500).json(err);
       }
 
       if(result.length > 0){
 
   const otp = generateOTP();
-  console.log("Generated OTP:", otp);
+  // console.log("Generated OTP:", otp);
 
   db.query(
     "UPDATE users SET otp=?, verified=false WHERE email=?",
@@ -67,7 +67,7 @@ exports.signup = async (req,res)=>{
       const hashed = await bcrypt.hash(password,10);
 
       const otp = generateOTP();
-      console.log("Generated OTP:", otp);
+      // console.log("Generated OTP:", otp);
 
       db.query(
         "INSERT INTO users (name,email,password,contact,otp,verified) VALUES (?,?,?,?,?,false)",
@@ -75,7 +75,7 @@ exports.signup = async (req,res)=>{
         (err)=>{
 
           if(err){
-            console.log(err);
+            // console.log(err);
             return res.status(500).json(err);
           }
 
@@ -103,7 +103,7 @@ exports.verifyOTP = (req,res)=>{
     (err,result)=>{
 
       if(err){
-        console.log(err);
+        // console.log(err);
         return res.status(500).json(err);
       }
 
@@ -127,7 +127,7 @@ exports.verifyOTP = (req,res)=>{
         (err)=>{
 
           if(err){
-            console.log(err);
+            // console.log(err);
             return res.status(500).json(err);
           }
 
@@ -160,7 +160,7 @@ exports.login = (req,res)=>{
     async (err,result)=>{
 
       if(err){
-        console.log(err);
+        // console.log(err);
         return res.status(500).json({message:"Server error"});
       }
 

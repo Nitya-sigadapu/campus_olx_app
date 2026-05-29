@@ -3,6 +3,8 @@ const db = require("../config/db");
 
 // CREATE LISTING
 exports.createListing = (req, res) => {
+  // console.log("BODY:", req.body);
+  // console.log("FILE:", req.file);
 
  const { title, description, category, item_condition, price } = req.body || {};
 
@@ -19,7 +21,7 @@ exports.createListing = (req, res) => {
   return res.status(400).json({ message: "Category is required" });
  }
 
- const image_url = req.file ? `/uploads/${req.file.filename}` : null;
+ const image_url = req.file ? req.file.path : null;
 
  db.query(
   `INSERT INTO listings
@@ -29,7 +31,7 @@ exports.createListing = (req, res) => {
   (err,result)=>{
 
    if(err){
-    console.log(err);
+    // console.log(err);
     return res.status(500).json(err);
    }
 
@@ -45,7 +47,7 @@ exports.createListing = (req, res) => {
 // GET ALL LISTINGS (with search + filters + pagination)
 exports.getListings = (req,res)=>{
 
- console.log("GET /api/listings called");
+ // console.log("GET /api/listings called");
 
  const page = parseInt(req.query.page) || 1;
  const limit = 12;
@@ -78,7 +80,7 @@ exports.getListings = (req,res)=>{
   (err,result)=>{
 
    if(err){
-    console.log("Query error:",err);
+    // console.log("Query error:",err);
     return res.status(500).json(err);
    }
 
@@ -123,7 +125,7 @@ exports.updateListing = (req,res)=>{
     (err)=>{
 
      if(err){
-      console.log(err);
+      // console.log(err);
       return res.status(500).json(err);
      }
 
@@ -166,7 +168,7 @@ exports.deleteListing = (req,res)=>{
     (err)=>{
 
      if(err){
-      console.log("Error deleting interests:", err);
+      // console.log("Error deleting interests:", err);
       return res.status(500).json(err);
      }
 
@@ -176,7 +178,7 @@ exports.deleteListing = (req,res)=>{
       (err)=>{
 
        if(err){
-        console.log("Error deleting listing:", err);
+        // console.log("Error deleting listing:", err);
         return res.status(500).json(err);
        }
 
@@ -197,7 +199,7 @@ exports.deleteListing = (req,res)=>{
 
 // SHOW CONTACT (SECURE)
 exports.showContact = (req, res) => {
-  console.log("Contact API called by user:", req.userId);
+  // console.log("Contact API called by user:", req.userId);
 
   const listingId = req.params.id;
   const requesterId = req.userId;
@@ -216,7 +218,7 @@ exports.showContact = (req, res) => {
 
   db.query(query, [listingId], (err, results) => {
     if (err) {
-      console.log("DB error:", err);
+      // console.log("DB error:", err);
       return res.status(500).json({ error: "Database error" });
     }
 
