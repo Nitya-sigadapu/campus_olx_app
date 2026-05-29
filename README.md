@@ -1,48 +1,52 @@
 # Campus OLX – The Campus Resource Exchange
 
+## Live Demo
+
+🚀 **Deployed Application:** [Campus OLX](https://campus-olx-app-3.onrender.com/)
+
+---
+
 ## Project Overview
 
-Campus OLX is a secure campus-exclusive marketplace platform designed for students to buy and sell used academic and hostel-related resources such as books, electronics, cycles, lab coats, stationery, and room essentials.
+Campus OLX is a secure campus-exclusive marketplace platform designed for students to buy and sell used academic and hostel-related resources such as books, electronics, cycles, lab coats, stationery, calculators, and room essentials.
 
-Every semester, seniors often discard valuable items while juniors search for affordable alternatives. Campus OLX bridges this gap by creating a trusted student marketplace within the college community.
+Every semester, seniors often discard valuable items while juniors search for affordable alternatives. Campus OLX bridges this gap by creating a trusted student marketplace within the college ecosystem.
 
-The platform restricts access to verified college email IDs and includes OTP verification, JWT authentication, real-time chat, image uploads, pagination, and interest tracking.
-
----
-
-# Tech Stack
-
-| Category                | Technology | Purpose                        |
-| ----------------------- | ---------- | ------------------------------ |
-| Frontend                | React.js   | Dynamic component-based UI     |
-| Backend                 | Express.js | REST API development           |
-| Database                | MySQL      | Relational database management |
-| Authentication          | JWT        | Secure user sessions           |
-| Password Security       | bcrypt     | Password hashing               |
-| Real-Time Communication | Socket.io  | Instant messaging              |
-| File Uploads            | Multer     | Image upload handling          |
-| API Requests            | Axios      | Frontend-backend communication |
+The platform includes secure authentication, cloud-based image uploads, real-time messaging, interest tracking, pagination, and advanced marketplace search and filtering.
 
 ---
 
-# Database
+## Tech Stack
 
-The project uses a local MySQL database:
+| Category                | Technology          | Purpose                        |
+| ----------------------- | ------------------- | ------------------------------ |
+| Frontend                | React.js            | Dynamic component-based UI     |
+| Backend                 | Node.js, Express.js | REST API development           |
+| Database                | MySQL / TiDB Cloud  | Relational database management |
+| Authentication          | JWT                 | Secure user sessions           |
+| Password Security       | bcrypt              | Password hashing               |
+| Real-Time Communication | Socket.io           | Instant messaging              |
+| Image Storage           | Cloudinary          | Cloud image hosting            |
+| API Requests            | Axios               | Frontend-backend communication |
+| Deployment              | Render              | Application hosting            |
 
-```sql
-campus_olx
-```
+---
 
-## Main Tables
+## Database
+
+The project uses MySQL locally and TiDB Cloud for production deployment.
+
+### Main Tables
 
 * users
 * listings
 * interests
 * messages
+* reviews
 
 ---
 
-# Demo Accounts
+## Demo Accounts
 
 The following demo accounts are available for testing:
 
@@ -57,19 +61,19 @@ If login fails, users can create a new account using the signup page.
 
 ---
 
-# OTP Verification
+## OTP Verification
 
 During signup:
 
-1. User enters email, password, and contact number
-2. Backend generates a 6-digit OTP
-3. OTP is displayed in backend terminal
-4. User enters OTP in frontend
-5. Account becomes verified after successful validation
+* User enters email, password, and contact number
+* Backend generates a 6-digit OTP
+* OTP is displayed in the backend terminal
+* User enters OTP in frontend
+* Account becomes verified after successful validation
 
 Example terminal output:
 
-```bash
+```text
 Generated OTP for user@iiti.ac.in : 493078
 ```
 
@@ -79,10 +83,10 @@ Generated OTP for user@iiti.ac.in : 493078
 
 ## Secure Authentication
 
-* College email-only registration
-* OTP verification system
-* Password hashing using bcrypt
 * JWT-based authentication
+* Password hashing using bcrypt
+* Protected API routes
+* Persistent login sessions
 
 ---
 
@@ -106,25 +110,25 @@ Users can:
 
 Unauthorized deletion attempts return:
 
-```bash
+```text
 403 Forbidden
 ```
 
 ---
 
-## Image Upload Functionality
+## Cloud Image Uploads
 
-Campus OLX supports image uploads for marketplace listings.
+Campus OLX supports image uploads through Cloudinary.
 
 ### Features
 
-* Users can upload product photos while creating listings
-* Images are stored locally on the backend server using Multer
-* Uploaded images are dynamically displayed on listing cards
-* Unique filenames are generated to prevent collisions
-* Placeholder image displayed when no image exists
+* Cloud-hosted product images
+* Optimized image delivery
+* Unique image URLs stored in database
+* Automatic image management
+* Placeholder image support when no image exists
 
-This feature improves listing quality and provides a more realistic marketplace experience.
+This significantly improves listing quality and user experience.
 
 ---
 
@@ -132,12 +136,12 @@ This feature improves listing quality and provides a more realistic marketplace 
 
 Dashboard displays:
 
-*Listing image previews
-*Item title and price
-*Seller information
-*Interest count
-*Category and condition details
-*Clean card-based marketplace UI
+* Listing image previews
+* Item title and price
+* Seller information
+* Interest count
+* Category and condition details
+* Clean card-based marketplace UI
 
 ---
 
@@ -164,7 +168,7 @@ When a user clicks **Show Interest**:
 
 Example:
 
-```bash
+```text
 8 students interested
 ```
 
@@ -195,27 +199,40 @@ The chat system enables smooth communication directly inside the platform.
 
 ---
 
-# Setup Instructions
+## Architecture
 
-## 1. Clone Repository
+```text
+React Frontend
+      |
+      v
+Express Backend
+      |
+      +------> TiDB Cloud Database
+      |
+      +------> Cloudinary Image Storage
+      |
+      +------> Socket.io Real-Time Communication
+```
+
+---
+
+## Setup Instructions
+
+### 1. Clone Repository
 
 ```bash
 git clone https://github.com/Nitya-sigadapu/campus_olx_app.git
 cd campus_olx_app
 ```
 
----
-
-## 2. Install Backend Dependencies
+### 2. Install Backend Dependencies
 
 ```bash
 cd backend
 npm install
 ```
 
----
-
-## 3. Install Frontend Dependencies
+### 3. Install Frontend Dependencies
 
 ```bash
 cd ../frontend
@@ -224,29 +241,38 @@ npm install
 
 ---
 
-# Environment Variables
+## Environment Variables
 
 Create a `.env` file inside the backend folder.
 
-Example:
-
 ```env
 PORT=5000
-JWT_SECRET=your_secret_key
+
+DB_HOST=
+DB_PORT=
+DB_USER=
+DB_PASSWORD=
+DB_NAME=
+
+JWT_SECRET=
+
+CLOUDINARY_CLOUD_NAME=
+CLOUDINARY_API_KEY=
+CLOUDINARY_API_SECRET=
 ```
 
 ---
 
-# Run Backend
+## Run Backend
 
 ```bash
 cd backend
-node server.js
+npm start
 ```
 
 ---
 
-# Run Frontend
+## Run Frontend
 
 ```bash
 cd frontend
@@ -255,45 +281,50 @@ npm start
 
 ---
 
-# Local Development URLs
+## Local Development URLs
 
-## Frontend
+### Frontend
 
-```bash
+```text
 http://localhost:3000
 ```
 
-## Backend API
+### Backend API
 
-```bash
+```text
 http://localhost:5000
 ```
 
 ---
 
-# Deployment
+## Deployment
 
-The project currently runs locally for development purposes.
+### Frontend & Backend
 
-Recommended deployment platforms:
+* Render
 
-* Render (Backend)
-* Vercel / Netlify (Frontend)
+### Database
+
+* TiDB Cloud Serverless
+
+### Image Storage
+
+* Cloudinary
 
 ---
 
-# Future Improvements
+## Future Improvements
 
-* Cloud image storage using AWS S3 or Cloudinary
-* Full production deployment
-* Seller notification system
-* Advanced recommendation engine
-* Mobile responsive optimization
+* Recommendation engine
+* Seller ratings and reputation system
+* Push notifications
+* Campus-specific categories
+* Mobile application
 * Admin moderation dashboard
 
 ---
 
-# Author
+## Author
 
 Developed as a full-stack web application project demonstrating:
 
@@ -301,7 +332,11 @@ Developed as a full-stack web application project demonstrating:
 * REST API development
 * Database management
 * Real-time communication
-* File upload handling
+* Cloud image storage
 * Modern React frontend architecture
 * Secure backend engineering
 * Full-stack application deployment workflows
+
+**Nitya Sigadapu**
+
+GitHub: https://github.com/Nitya-sigadapu
