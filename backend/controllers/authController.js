@@ -47,7 +47,9 @@ exports.signup = async (req,res)=>{
       if(result.length > 0){
 
   const otp = generateOTP();
-  // console.log("Generated OTP:", otp);
+  console.log("=========================================");
+  console.log(`YOUR OTP FOR ${email} IS: ${otp}`);
+  console.log("=========================================");
 
   db.query(
     "UPDATE users SET otp=?, verified=false WHERE email=?",
@@ -67,7 +69,9 @@ exports.signup = async (req,res)=>{
       const hashed = await bcrypt.hash(password,10);
 
       const otp = generateOTP();
-      // console.log("Generated OTP:", otp);
+      console.log("=========================================");
+      console.log(`YOUR OTP FOR ${email} IS: ${otp}`);
+      console.log("=========================================");
 
       db.query(
         "INSERT INTO users (name,email,password,contact,otp,verified) VALUES (?,?,?,?,?,false)",
