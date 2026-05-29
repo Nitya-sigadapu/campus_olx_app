@@ -69,7 +69,7 @@ exports.getListings = (req,res)=>{
     WHERE listings.title LIKE ?
     AND listings.category LIKE ?
     AND listings.price BETWEEN ? AND ?
-    GROUP BY listings.id
+    GROUP BY listings.id, users.name
     ORDER BY listings.created_at DESC
     LIMIT ? OFFSET ?
     `;
