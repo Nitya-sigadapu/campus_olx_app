@@ -80,9 +80,15 @@ io.on("connection", (socket) => {
 
     try {
 
-      await db.query(
+      db.query(
         "INSERT INTO messages (sender_id,receiver_id,message) VALUES (?,?,?)",
-        [senderId, receiverId, message]
+        [senderId, receiverId, message],
+        (err, result) => {
+          if (err) {
+            // console.log("Message saving error:", err);
+            return;
+          }
+        }
       );
 
       const msg = {
