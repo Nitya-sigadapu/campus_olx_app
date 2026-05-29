@@ -1,40 +1,37 @@
 # Campus OLX – The Campus Resource Exchange
 
-## Live Demo
-
-🚀 **Deployed Application:** [Campus OLX](https://campus-olx-app-3.onrender.com/)
+🚀 **Live Demo:** [Campus OLX](https://campus-olx-app-3.onrender.com/)
 
 ---
 
 ## Project Overview
 
-Campus OLX is a secure campus-exclusive marketplace platform designed for students to buy and sell used academic and hostel-related resources such as books, electronics, cycles, lab coats, stationery, calculators, and room essentials.
+Campus OLX is a secure campus-exclusive marketplace platform designed for students to buy and sell academic and hostel-related resources such as books, electronics, calculators, cycles, lab coats, stationery, and room essentials.
 
 Every semester, seniors often discard valuable items while juniors search for affordable alternatives. Campus OLX bridges this gap by creating a trusted student marketplace within the college ecosystem.
 
-The platform includes secure authentication, cloud-based image uploads, real-time messaging, interest tracking, pagination, and advanced marketplace search and filtering.
+Access is restricted to verified institutional email IDs only, ensuring that only college students can use the platform. The platform includes secure authentication, cloud-hosted image uploads, real-time messaging, interest tracking, pagination, and advanced marketplace search and filtering.
 
 ---
 
-## Tech Stack
-
-| Category                | Technology          | Purpose                        |
-| ----------------------- | ------------------- | ------------------------------ |
-| Frontend                | React.js            | Dynamic component-based UI     |
-| Backend                 | Node.js, Express.js | REST API development           |
-| Database                | MySQL / TiDB Cloud  | Relational database management |
-| Authentication          | JWT                 | Secure user sessions           |
-| Password Security       | bcrypt              | Password hashing               |
-| Real-Time Communication | Socket.io           | Instant messaging              |
-| Image Storage           | Cloudinary          | Cloud image hosting            |
-| API Requests            | Axios               | Frontend-backend communication |
-| Deployment              | Render              | Application hosting            |
+| Category | Technology | Purpose |
+|-----------|------------|----------|
+| Frontend | React.js | Dynamic component-based UI |
+| UI Styling | Tailwind CSS | Responsive and modern user interface |
+| Backend | Node.js, Express.js | REST API development |
+| Database | MySQL / TiDB Cloud | Relational database management |
+| Authentication | JWT | Secure user sessions |
+| Password Security | bcrypt | Password hashing |
+| Real-Time Communication | Socket.io | Instant messaging |
+| Image Storage | Cloudinary | Cloud image hosting |
+| API Requests | Axios | Frontend-backend communication |
+| Deployment | Render | Application hosting |
 
 ---
 
 ## Database
 
-The project uses MySQL locally and TiDB Cloud for production deployment.
+The project uses MySQL locally and TiDB Cloud in production.
 
 ### Main Tables
 
@@ -67,19 +64,22 @@ During signup:
 
 * User enters email, password, and contact number
 * Backend generates a 6-digit OTP
-* OTP is displayed in the backend terminal
+* OTP is displayed in backend logs (development mode)/render logs
 * User enters OTP in frontend
 * Account becomes verified after successful validation
-
-Example terminal output:
-
-```text
-Generated OTP for user@iiti.ac.in : 493078
-```
 
 ---
 
 # Features
+
+## Secure Campus Access
+
+* Registration restricted to institutional email IDs only
+* Student-only marketplace ecosystem
+* Prevents unauthorized external access
+* Trusted campus community environment
+
+---
 
 ## Secure Authentication
 
@@ -127,8 +127,6 @@ Campus OLX supports image uploads through Cloudinary.
 * Unique image URLs stored in database
 * Automatic image management
 * Placeholder image support when no image exists
-
-This significantly improves listing quality and user experience.
 
 ---
 
@@ -195,7 +193,18 @@ Campus OLX includes a real-time messaging system powered by Socket.io.
 * Auto-scroll chat interface
 * WhatsApp-inspired modern chat UI
 
-The chat system enables smooth communication directly inside the platform.
+---
+
+## Responsive User Interface
+
+## Responsive User Interface
+
+* Built using React.js and Tailwind CSS
+* Fully responsive design
+* Optimized for desktops, tablets, and mobile devices
+* Modern card-based marketplace interface
+* Responsive chat and dashboard layouts
+* Consistent user experience across screen sizes
 
 ---
 
@@ -218,24 +227,24 @@ Express Backend
 
 ## Setup Instructions
 
-### 1. Clone Repository
+### Clone Repository
 
 ```bash
 git clone https://github.com/Nitya-sigadapu/campus_olx_app.git
 cd campus_olx_app
 ```
 
-### 2. Install Backend Dependencies
+### Install Backend Dependencies
 
 ```bash
 cd backend
 npm install
 ```
 
-### 3. Install Frontend Dependencies
+### Install Frontend Dependencies
 
 ```bash
-cd ../frontend
+cd frontend
 npm install
 ```
 
@@ -299,7 +308,7 @@ http://localhost:5000
 
 ## Deployment
 
-### Frontend & Backend
+### Application Hosting
 
 * Render
 
