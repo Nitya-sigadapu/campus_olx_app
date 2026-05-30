@@ -2,38 +2,38 @@
 
 🚀 **Live Demo:** [Campus OLX](https://campus-olx-app-3.onrender.com/)
 
----
-
 ## Project Overview
 
 Campus OLX is a secure campus-exclusive marketplace platform designed for students to buy and sell academic and hostel-related resources such as books, electronics, calculators, cycles, lab coats, stationery, and room essentials.
 
 Every semester, seniors often discard valuable items while juniors search for affordable alternatives. Campus OLX bridges this gap by creating a trusted student marketplace within the college ecosystem.
 
-Access is restricted to verified institutional email IDs only, ensuring that only college students can use the platform. The platform includes secure authentication, cloud-hosted image uploads, real-time messaging, interest tracking, pagination, and advanced marketplace search and filtering.
+Access is restricted to verified institutional email IDs only, ensuring that only college students can use the platform. The platform includes secure authentication, cloud-hosted image uploads, real-time messaging, interest tracking, seller ratings and reviews, pagination, and advanced marketplace search and filtering.
 
 ---
 
-| Category | Technology | Purpose |
-|-----------|------------|----------|
-| Frontend | React.js | Dynamic component-based UI |
-| UI Styling | Tailwind CSS | Responsive and modern user interface |
-| Backend | Node.js, Express.js | REST API development |
-| Database | MySQL / TiDB Cloud | Relational database management |
-| Authentication | JWT | Secure user sessions |
-| Password Security | bcrypt | Password hashing |
-| Real-Time Communication | Socket.io | Instant messaging |
-| Image Storage | Cloudinary | Cloud image hosting |
-| API Requests | Axios | Frontend-backend communication |
-| Deployment | Render | Application hosting |
+# Tech Stack
+
+| Category                | Technology          | Purpose                              |
+| ----------------------- | ------------------- | ------------------------------------ |
+| Frontend                | React.js            | Dynamic component-based UI           |
+| UI Styling              | Tailwind CSS        | Responsive and modern user interface |
+| Backend                 | Node.js, Express.js | REST API development                 |
+| Database                | MySQL / TiDB Cloud  | Relational database management       |
+| Authentication          | JWT                 | Secure user sessions                 |
+| Password Security       | bcrypt              | Password hashing                     |
+| Real-Time Communication | Socket.io           | Instant messaging                    |
+| Image Storage           | Cloudinary          | Cloud image hosting                  |
+| API Requests            | Axios               | Frontend-backend communication       |
+| Deployment              | Render              | Application hosting                  |
 
 ---
 
-## Database
+# Database
 
 The project uses MySQL locally and TiDB Cloud in production.
 
-### Main Tables
+## Main Tables
 
 * users
 * listings
@@ -41,9 +41,16 @@ The project uses MySQL locally and TiDB Cloud in production.
 * messages
 * reviews
 
+## Relationships
+
+* User → Listings (One-to-Many)
+* Users ↔ Listings through Interests (Many-to-Many)
+* Users → Messages (One-to-Many via sender and receiver)
+* Users ↔ Reviews (Many-to-Many through seller ratings and reviews)
+
 ---
 
-## Demo Accounts
+# Demo Accounts
 
 The following demo accounts are available for testing:
 
@@ -58,15 +65,15 @@ If login fails, users can create a new account using the signup page.
 
 ---
 
-## OTP Verification
+# OTP Verification
 
 During signup:
 
-* User enters email, password, and contact number
-* Backend generates a 6-digit OTP
-* OTP is displayed in backend logs (development mode)/render logs
-* User enters OTP in frontend
-* Account becomes verified after successful validation
+1. User enters email, password, and contact number
+2. Backend generates a 6-digit OTP
+3. OTP is displayed in backend logs / Render logs (development mode)
+4. User enters OTP in frontend
+5. Account becomes verified after successful validation
 
 ---
 
@@ -172,6 +179,22 @@ Example:
 
 ---
 
+## Seller Rating & Reputation System
+
+Campus OLX includes a seller reputation system to improve trust within the marketplace.
+
+Features:
+
+* View seller profiles directly from listings
+* Submit ratings and reviews for sellers
+* View average seller rating
+* View seller review history
+* Reputation-based buyer decision support
+
+This system helps buyers identify reliable sellers while encouraging accountability and positive marketplace interactions.
+
+---
+
 ## Pagination
 
 To improve performance and user experience:
@@ -197,18 +220,19 @@ Campus OLX includes a real-time messaging system powered by Socket.io.
 
 ## Responsive User Interface
 
-## Responsive User Interface
+Built using React.js and Tailwind CSS.
 
-* Built using React.js and Tailwind CSS
+### Features
+
 * Fully responsive design
-* Optimized for desktops, tablets, and mobile devices
+* Optimized for desktops, tablets, and mobile browsers
 * Modern card-based marketplace interface
 * Responsive chat and dashboard layouts
 * Consistent user experience across screen sizes
 
 ---
 
-## Architecture
+# Architecture
 
 ```text
 React Frontend
@@ -225,30 +249,28 @@ Express Backend
 
 ---
 
-## Setup Instructions
+# Setup Instructions
 
-### Clone Repository
+## Clone Repository
 
 ```bash
 git clone https://github.com/Nitya-sigadapu/campus_olx_app.git
 cd campus_olx_app
 ```
 
-### Install Backend Dependencies
+## Install Backend Dependencies
 
 ```bash
 cd backend
 npm install
 ```
 
-### Install Frontend Dependencies
+## Install Frontend Dependencies
 
 ```bash
 cd frontend
 npm install
 ```
-
----
 
 ## Environment Variables
 
@@ -270,16 +292,12 @@ CLOUDINARY_API_KEY=
 CLOUDINARY_API_SECRET=
 ```
 
----
-
 ## Run Backend
 
 ```bash
 cd backend
 npm start
 ```
-
----
 
 ## Run Frontend
 
@@ -290,7 +308,7 @@ npm start
 
 ---
 
-## Local Development URLs
+# Local Development URLs
 
 ### Frontend
 
@@ -306,33 +324,34 @@ http://localhost:5000
 
 ---
 
-## Deployment
+# Deployment
 
-### Application Hosting
+## Application Hosting
 
 * Render
 
-### Database
+## Database
 
 * TiDB Cloud Serverless
 
-### Image Storage
+## Image Storage
 
 * Cloudinary
 
 ---
 
-## Future Improvements
+# Future Improvements
 
-* Recommendation engine
-* Seller ratings and reputation system
-* Push notifications
-* Campus-specific categories
-* Admin moderation dashboard
+* Personalized recommendation engine
+* Push notifications for chats and listing activity
+* Native mobile application using React Native
+* Campus-specific category recommendations
+* Admin moderation and reporting dashboard
+* AI-powered listing recommendations
 
 ---
 
-## Author
+# Author
 
 Developed as a full-stack web application project demonstrating:
 
@@ -341,10 +360,13 @@ Developed as a full-stack web application project demonstrating:
 * Database management
 * Real-time communication
 * Cloud image storage
+* Seller reputation and review management
 * Modern React frontend architecture
 * Secure backend engineering
 * Full-stack application deployment workflows
 
 **Nitya Sigadapu**
 
-GitHub: https://github.com/Nitya-sigadapu
+GitHub: [Nitya-sigadapu](https://github.com/Nitya-sigadapu)
+
+Live Demo: [Campus OLX](https://campus-olx-app-3.onrender.com/)
