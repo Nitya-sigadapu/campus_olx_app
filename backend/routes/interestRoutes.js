@@ -9,7 +9,7 @@ router.post("/interests", (req, res) => {
   const { userId, listingId } = req.body;
 
   db.query(
-    "INSERT INTO interests (user_id, listing_id) VALUES (?, ?)",
+    "INSERT IGNORE INTO interests (user_id, listing_id) VALUES (?, ?)",
     [userId, listingId],
     (err) => {
 

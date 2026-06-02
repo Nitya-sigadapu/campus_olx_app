@@ -192,6 +192,11 @@ function Login({ setUser }) {
             >
               {signup ? "Sign in instead" : "Create one now"}
             </button>
+            <div className="mt-6 p-4 bg-blue-50 border border-blue-100 rounded-xl max-w-xs mx-auto shadow-sm">
+              <p className="text-sm text-blue-800 font-bold mb-1">Test Account Details</p>
+              <p className="text-xs text-blue-700 font-medium tracking-wide">Email: nitya@iiti.ac.in</p>
+              <p className="text-xs text-blue-700 font-medium tracking-wide">Password: 123456</p>
+            </div>
           </div>
         )}
 

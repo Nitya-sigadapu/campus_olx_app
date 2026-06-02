@@ -164,8 +164,8 @@ exports.login = (req,res)=>{
     async (err,result)=>{
 
       if(err){
-        // console.log(err);
-        return res.status(500).json({message:"Server error"});
+        console.error("Login DB Error:", err);
+        return res.status(500).json({message:"Server error", error: err.message});
       }
 
       const user = result[0];

@@ -25,6 +25,8 @@ function App() {
     setUser(null);
   };
 
+  const path = window.location.pathname;
+
   if (!user) {
     return (
       <>

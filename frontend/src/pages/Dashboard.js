@@ -223,11 +223,11 @@ function Dashboard() {
 
               <div className="flex space-x-2 mt-auto">
                 <button
-                  className={`flex-1 py-2 px-4 rounded-lg font-semibold text-sm transition-all duration-200 shadow-sm active:translate-y-1 active:scale-95 active:shadow-inner ${item.seller_id === user.id ? 'bg-gray-100 text-gray-400 cursor-not-allowed' : 'bg-indigo-600 hover:bg-indigo-700 text-white shadow-md hover:shadow-lg'}`}
+                  className={`flex-1 py-2 px-4 rounded-lg font-semibold text-sm transition-all duration-200 shadow-sm active:translate-y-1 active:scale-95 active:shadow-inner ${item.seller_id === user.id ? 'bg-gray-100 text-gray-400 cursor-not-allowed' : contacts[item.id] ? 'bg-emerald-600 hover:bg-emerald-700 text-white shadow-md' : 'bg-indigo-600 hover:bg-indigo-700 text-white shadow-md hover:shadow-lg'}`}
                   onClick={() => showContact(item.id)}
-                  disabled={item.seller_id === user.id}
+                  disabled={item.seller_id === user.id || contacts[item.id]}
                 >
-                  Interested
+                  {contacts[item.id] ? "Selected" : "Interested"}
                 </button>
 
                 <button
